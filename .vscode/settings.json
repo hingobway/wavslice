@@ -1,0 +1,9 @@
+{
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "files.associations": {
+    "*.css": "postcss",
+    "sndfile.h": "c",
+    "__config": "c",
+    "version": "c"
+  }
+}
