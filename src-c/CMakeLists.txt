@@ -4,15 +4,29 @@ project(WAVMarkers VERSION 0.1.0)
 
 find_package(SndFile CONFIG REQUIRED)
 
-set(TARGET_NAME app)
-add_executable(${TARGET_NAME})
+set(PROGRAM_NAME "markers")
 
-if(NOT MSVC)
-  target_compile_options(${TARGET_NAME} PRIVATE -Wall)
+# FIND CORRECT BINARY NAME
+if(NOT APPLE)
+  message(FATAL_ERROR "This program is currently Mac-only.")
 endif()
 
-file(GLOB_RECURSE HEADER_FILES src/*.h)
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
+  set(PROC "aarch64")
+elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+  set(PROC "x86_64")
+else()
+  set(PROC "unknown")
+endif()
 
+set(TARGET_NAME "${PROGRAM_NAME}-${PROC}-apple-darwin")
+
+# PREP TARGET
+add_executable(${TARGET_NAME})
+target_compile_options(${TARGET_NAME} PRIVATE -Wall)
+
+# ADD FILES
+file(GLOB_RECURSE HEADER_FILES src/*.h)
 target_sources(${TARGET_NAME}
   PRIVATE
   ${HEADER_FILES}
@@ -22,6 +36,7 @@ target_sources(${TARGET_NAME}
   src/test.c
 )
 
+# LINK LIBRARIES
 target_link_libraries(${TARGET_NAME}
   PRIVATE
   SndFile::sndfile
