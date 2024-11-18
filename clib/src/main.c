@@ -7,7 +7,8 @@
 #include "utils.h"
 #include "test.h"
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 4096
+#define LOG_EVERY 1200
 
 int printFileMarkers(SNDFILE *wav);
 int audioProcessor(const char *path_in, const char *path_out, const int *markers, const int num_markers);
@@ -95,13 +96,24 @@ int audioProcessor(const char *path_in, const char *path_out, const int *markers
   if (!yes)
     return 1;
 
+  // track frames for logging
+  sf_count_t frames = sf_seek(file_in, 0, SEEK_END);
+  sf_seek(file_in, 0, SEEK_SET);
+  int btotal = frames * sf_info.channels / BUFFER_SIZE;
+  int current = 0;
+
   // copy audio to output file
   int samples_read = 0;
   float buffer[BUFFER_SIZE];
   while ((samples_read = (int)sf_read_float(file_in, buffer, BUFFER_SIZE)))
+  {
     sf_write_float(file_out, buffer, samples_read);
+    // status
+    if (++current == btotal || current % LOG_EVERY == 0)
+      printf("%%%d\n", 100 * current / btotal);
+  }
 
-  // Close the file
+  // close files
   sf_close(file_in);
   sf_close(file_out);
   file_in = NULL;

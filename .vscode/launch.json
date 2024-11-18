@@ -16,7 +16,7 @@
         }
       ],
       "externalConsole": true,
-      "args": []
+      "args": ["aud/mkrs_track.wav"]
     }
   ]
 }
