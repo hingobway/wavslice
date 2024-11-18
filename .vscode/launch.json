@@ -16,7 +16,13 @@
         }
       ],
       "externalConsole": true,
-      "args": ["aud/mkrs_track.wav", "out.wav", "142222,711111,1280000,1848889,2702222,4266667"]
+      // "args": [
+      //   "-w",
+      //   "aud/mkrs_track.wav",
+      //   "000.wav",
+      //   "142222,711111,1280000,1848889,2702222,4266667"
+      // ]
+      "args": ["-a", "aud/mkrs_track.wav"]
     }
   ]
 }

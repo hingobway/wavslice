@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 project(wavslice VERSION 0.1.0)
 
@@ -30,13 +32,16 @@ set_target_properties(${TARGET_NAME} PROPERTIES
 )
 
 # ADD FILES
-file(GLOB_RECURSE HEADER_FILES src/*.h)
+file(GLOB_RECURSE H_FILES src/*.h)
+file(GLOB_RECURSE HPP_FILES src/*.h)
 target_sources(${TARGET_NAME}
   PRIVATE
-  ${HEADER_FILES}
+  ${H_FILES} ${HPP_FILES}
 
-  src/main.c
-  src/utils.c
+  src/cpp/main.cpp
+
+  # src/main.c
+  # src/utils.c
 )
 
 # LINK LIBRARIES
