@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  @apply select-none cursor-default;
+body {
+  @apply cursor-default select-none bg-zinc-900 font-sans text-zinc-100;
 }

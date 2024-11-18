@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(WAVMarkers VERSION 0.1.0)
+project(wavslice VERSION 0.1.0)
 
 find_package(SndFile CONFIG REQUIRED)
 
@@ -37,7 +37,6 @@ target_sources(${TARGET_NAME}
 
   src/main.c
   src/utils.c
-  src/test.c
 )
 
 # LINK LIBRARIES
