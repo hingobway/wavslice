@@ -18,6 +18,7 @@ target_sources(${TARGET_NAME}
   ${HEADER_FILES}
 
   src/main.c
+  src/utils.c
   src/test.c
 )
 

@@ -6,6 +6,7 @@
     "__config": "c",
     "version": "c",
     "stdlib.h": "c",
-    "test.h": "c"
+    "test.h": "c",
+    "utils.h": "c"
   }
 }

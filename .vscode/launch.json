@@ -7,7 +7,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/build/App",
       "stopAtEntry": false,
-      "cwd": "${fileDirname}",
+      "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": true,
       "MIMode": "lldb",
