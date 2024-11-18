@@ -4,6 +4,8 @@
     "*.css": "postcss",
     "sndfile.h": "c",
     "__config": "c",
-    "version": "c"
+    "version": "c",
+    "stdlib.h": "c",
+    "test.h": "c"
   }
 }

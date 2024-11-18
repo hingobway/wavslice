@@ -4,20 +4,21 @@ project(WAVMarkers VERSION 0.1.0)
 
 find_package(SndFile REQUIRED)
 
-set(TARGET_NAME App)
+set(TARGET_NAME app)
 add_executable(${TARGET_NAME})
 
-if(MSVC)
-  target_compile_options(${TARGET_NAME} PRIVATE -Wall -Werror)
+if(NOT MSVC)
+  target_compile_options(${TARGET_NAME} PRIVATE -Wall)
 endif()
 
 file(GLOB_RECURSE HEADER_FILES src/*.h)
-file(GLOB_RECURSE SOURCE_FILES src/*.c)
 
 target_sources(${TARGET_NAME}
   PRIVATE
   ${HEADER_FILES}
-  ${SOURCE_FILES}
+
+  src/main.c
+  src/test.c
 )
 
 target_link_libraries(${TARGET_NAME}
