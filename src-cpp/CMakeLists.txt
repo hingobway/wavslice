@@ -2,27 +2,29 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# PROJECT INIT
 project(wavslice VERSION 0.1.0)
+set(PROGRAM_NAME "markers")
 
+# PACKAGE INCLUDE
 find_package(SndFile CONFIG REQUIRED)
 include(include/midifile.cmake)
 
-set(PROGRAM_NAME "markers")
-
 # FIND CORRECT BINARY NAME
-if(NOT APPLE)
-  message(FATAL_ERROR "This program is currently Mac-only.")
-endif()
+if(APPLE)
+  if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
+    set(PROC "aarch64")
+  elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    set(PROC "x86_64")
+  else()
+    set(PROC "unknown")
+  endif()
 
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
-  set(PROC "aarch64")
-elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-  set(PROC "x86_64")
+  set(TARGET_NAME "${PROGRAM_NAME}-${PROC}-apple-darwin")
 else()
-  set(PROC "unknown")
+  set(TARGET_NAME ${PROGRAM_NAME})
+  message(WARNING "Only CLI functionality is available on non MacOS platforms.")
 endif()
-
-set(TARGET_NAME "${PROGRAM_NAME}-${PROC}-apple-darwin")
 
 # PREP TARGET
 add_executable(${TARGET_NAME})
