@@ -25,6 +25,7 @@ function App() {
 
     // run cli
     const cmd = Command.sidecar('bin/markers', [
+      '-w',
       '/Users/michael/0-code/wav-markers/aud/mkrs_track.wav',
       '/Users/michael/0-code/wav-markers/ABCD.wav',
       '142222,711111,1280000,1848889,2702222,4266667',

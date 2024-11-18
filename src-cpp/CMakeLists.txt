@@ -32,16 +32,12 @@ set_target_properties(${TARGET_NAME} PROPERTIES
 )
 
 # ADD FILES
-file(GLOB_RECURSE H_FILES src/*.h)
-file(GLOB_RECURSE HPP_FILES src/*.h)
+file(GLOB_RECURSE HEADER_FILES src/*.hpp)
 target_sources(${TARGET_NAME}
   PRIVATE
-  ${H_FILES} ${HPP_FILES}
+  ${HEADER_FILES}
 
-  src/cpp/main.cpp
-
-  # src/main.c
-  # src/utils.c
+  src/main.cpp
 )
 
 # LINK LIBRARIES
