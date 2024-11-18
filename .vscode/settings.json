@@ -1,5 +1,8 @@
 {
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "cmake.sourceDirectory": "/Users/michael/0-code/wav-markers/clib",
+  "cmake.buildDirectory": "${workspaceFolder}/clib/build",
+
   "files.associations": {
     "*.css": "postcss",
     "sndfile.h": "c",

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 
 project(WAVMarkers VERSION 0.1.0)
 
-find_package(SndFile REQUIRED)
+find_package(SndFile CONFIG REQUIRED)
 
 set(TARGET_NAME app)
 add_executable(${TARGET_NAME})

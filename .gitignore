@@ -1,4 +1,6 @@
+# macOS
 .DS_Store
-build/
 
+# audio
 *.wav
+aud/

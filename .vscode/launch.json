@@ -2,17 +2,21 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "(lldb) Launch",
+      "name": "debug (macOS)",
       "type": "cppdbg",
+      "MIMode": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/build/App",
+      "program": "${command:cmake.launchTargetPath}",
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
-      "environment": [],
+      "environment": [
+        {
+          "name": "PATH",
+          "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+        }
+      ],
       "externalConsole": true,
-      "MIMode": "lldb",
-      "preLaunchTask": "CMake: build",
-      "args": ["../mkrs_track.wav"]
+      "args": []
     }
   ]
 }
