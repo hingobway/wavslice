@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "tauri-app",
+  "productName": "wav-markers",
   "version": "0.1.0",
-  "identifier": "com.hingobway.tauri",
+  "identifier": "com.hingobway.wavmarkers",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Markers",
+        "title": "WAVMarkers",
         "width": 400,
         "height": 400,
         "resizable": false
@@ -25,6 +25,9 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "externalBin": [
+      "../src-c/build/markers"
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

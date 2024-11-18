@@ -1,8 +1,8 @@
 [package]
-name = "tauri-app"
+name = "WAVMarkers"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "Add QLab-compatible slices to WAV files from Pro Tools or MIDI versions."
+authors = ["hingobway"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

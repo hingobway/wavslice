@@ -7,7 +7,28 @@
   ],
   "permissions": [
     "core:default",
+    "dialog:default",
+    "shell:default",
     "shell:allow-open",
-    "dialog:default"
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "../src-c/build/markers",
+          "sidecar": true,
+          "args": [
+            {
+              "validator": ".+"
+            },
+            {
+              "validator": ".+"
+            },
+            {
+              "validator": ".+"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }
