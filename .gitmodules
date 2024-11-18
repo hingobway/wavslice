@@ -1,0 +1,3 @@
+[submodule "src-cpp/include/midifile"]
+	path = src-cpp/include/midifile
+	url = https://github.com/craigsapp/midifile.git

@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 project(wavslice VERSION 0.1.0)
 
 find_package(SndFile CONFIG REQUIRED)
+include(include/midifile.cmake)
 
 set(PROGRAM_NAME "markers")
 
@@ -44,4 +45,5 @@ target_sources(${TARGET_NAME}
 target_link_libraries(${TARGET_NAME}
   PRIVATE
   SndFile::sndfile
+  midifile
 )
