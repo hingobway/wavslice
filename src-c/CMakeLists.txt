@@ -25,6 +25,10 @@ set(TARGET_NAME "${PROGRAM_NAME}-${PROC}-apple-darwin")
 add_executable(${TARGET_NAME})
 target_compile_options(${TARGET_NAME} PRIVATE -Wall)
 
+set_target_properties(${TARGET_NAME} PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../src-tauri/bin"
+)
+
 # ADD FILES
 file(GLOB_RECURSE HEADER_FILES src/*.h)
 target_sources(${TARGET_NAME}

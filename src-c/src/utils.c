@@ -1,5 +1,15 @@
 #include "utils.h"
 
+#include <stdio.h>
+#include <string.h>
+
+int err(const char *code)
+{
+  printf("ERROR %s\n", code);
+  return 1;
+}
+
+
 void getText(char *output_ptr, int isRequired, const char *prompt)
 {
   // get optional cli passed path

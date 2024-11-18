@@ -5,61 +5,81 @@
 #include <sndfile.h>
 
 #include "utils.h"
-#include "test.h"
 
+// ------------------------------------------------
+// CONSTANTS
+
+#define MAX_MARKERS 100
 #define BUFFER_SIZE 4096
 #define LOG_EVERY 1200
 
+// ------------------------------------------------
+// PROTOS
+
+int err(const char *code);
 int printFileMarkers(SNDFILE *wav);
 int audioProcessor(const char *path_in, const char *path_out, const int *markers, const int num_markers);
 
+int numCompare(const void *a, const void *b) { return (*(int *)a - *(int *)b); }
+
+// ------------------------------------------------
 // MAIN
 
 int main(int argc, char *argv[])
 {
+  // USAGE: markers ./filein.wav ./fileout.wav 1,2,3,4,5,6,7,8
 
-  // return test_func();
+  if (argc != 1 + 3)
+    return err("WRONG_NUM_ARGUMENTS");
 
-  char filename[MAX_STRING_LENGTH];
-  filename[0] = 0;
+  // file names
+  const char *file_in = argv[1];
+  const char *file_out = argv[2];
 
-  // if path is provided in args, use it
-  if (argc >= 2)
+  // markers list
+  int markers[MAX_MARKERS];
+  int marker_count = 0;
+
+  // marker string processing
+  const char *mlist = argv[3];  // marker list string
+  char cval[MAX_STRING_LENGTH]; // current value
+  cval[0] = 0;
+
+  for (int i = 0; i < strlen(mlist); i++)
   {
-    if (strlen(argv[1]) >= MAX_STRING_LENGTH)
+    // add new value if possible
+    if (mlist[i] == ',')
     {
-      printf("Error: path is too long.\n");
-      return 1;
+      if (strlen(cval))
+      {
+        int val = atoi(cval);
+        if (val)
+          markers[marker_count++] = val;
+      }
+      cval[0] = 0;
+      continue;
     }
-    strcpy(filename, argv[1]);
 
-    printf("The default wav path is  %s\n\n", filename);
+    // otherwise store digit and move on
+    int val = mlist[i] - '0';
+    if (val < 0 || val > 9)
+      return err("INVALID_MARKER_STRING");
+
+    size_t l_cval = strlen(cval);
+    if (l_cval >= MAX_STRING_LENGTH - 1)
+      return err("MARKER_STRING_TOO_LONG");
+    cval[l_cval] = mlist[i];
+    cval[l_cval + 1] = 0;
   }
 
-  // get optional cli passed path
-  char input_buffer[MAX_STRING_LENGTH];
-  getText(input_buffer, !strlen(filename), "Enter the path to the wav file: ");
-  if (strlen(input_buffer))
-    strcpy(filename, input_buffer);
+  // sort
+  qsort(markers, marker_count, sizeof(int), numCompare);
 
-  // get output filename
-  input_buffer[0] = 0;
-  getText(input_buffer, 1, "Enter output filename: ");
-
-  // Example marker positions (in samples)
-  int markers[] = {
-      142222,
-      711111,
-      1280000,
-      1848889,
-      2702222,
-      4266667};
-  int num_markers = sizeof(markers) / sizeof(markers[0]);
-
-  return audioProcessor(filename, input_buffer, markers, num_markers);
+  return audioProcessor(file_in, file_out, markers, marker_count);
 }
 
 // ------------------------------------------------
+// METHODS
 
 int audioProcessor(const char *path_in, const char *path_out, const int *markers, const int num_markers)
 {
@@ -74,8 +94,10 @@ int audioProcessor(const char *path_in, const char *path_out, const int *markers
   SNDFILE *file_in, *file_out;
   file_in = sf_open(path_in, SFM_READ, &sf_info);
   file_out = sf_open(path_out, SFM_WRITE, &sf_info);
-  if (!file_in || !file_out)
-    return 1;
+  if (!file_in)
+    return err("OPEN_FAILED_INPUT_FILE");
+  if (!file_out)
+    return err("OPEN_FAILED_OUTPUT_FILE");
 
   // set new cue points...
   SF_CUES cues;
@@ -94,13 +116,13 @@ int audioProcessor(const char *path_in, const char *path_out, const int *markers
   // write cue points to the file
   int yes = sf_command(file_out, SFC_SET_CUE, &cues, sizeof(cues));
   if (!yes)
-    return 1;
+    return err("CUE_WRITE_FAILED");
 
-  // track frames for logging
-  sf_count_t frames = sf_seek(file_in, 0, SEEK_END);
-  sf_seek(file_in, 0, SEEK_SET);
-  int btotal = frames * sf_info.channels / BUFFER_SIZE;
-  int current = 0;
+  // // track frames for logging
+  // sf_count_t frames = sf_seek(file_in, 0, SEEK_END);
+  // sf_seek(file_in, 0, SEEK_SET);
+  // int btotal = frames * sf_info.channels / BUFFER_SIZE;
+  // int current = 0;
 
   // copy audio to output file
   int samples_read = 0;
@@ -108,9 +130,10 @@ int audioProcessor(const char *path_in, const char *path_out, const int *markers
   while ((samples_read = (int)sf_read_float(file_in, buffer, BUFFER_SIZE)))
   {
     sf_write_float(file_out, buffer, samples_read);
-    // status
-    if (++current == btotal || current % LOG_EVERY == 0)
-      printf("%%%d\n", 100 * current / btotal);
+
+    // // status
+    // if (++current == btotal || current % LOG_EVERY == 0)
+    //   printf("%%%d\n", 100 * current / btotal);
   }
 
   // close files
