@@ -18,6 +18,7 @@
       "externalConsole": true,
       // "args": ["-w", "aud/mkrs_track.wav", "000.wav", "106666,391111,1813333,2666667,4231112,4800001,7217780,7786669,8355558"]
       "args": ["-a", "000.wav"]
+      // "args": ["-s", "000.wav"]
       // "args": ["-m", "aud/single.mid", "48000"]
     }
   ]

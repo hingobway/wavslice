@@ -25,6 +25,7 @@ int writeWavWithMarkers(const char *path_in, const char *path_out, std::vector<i
 
 int readAudioMarkers(const char *file_path);
 int readMIDIMarkers(const char *file_path, int SR);
+int readAudioSampleRate(const char *file_path);
 
 // ------------------------------------------------
 // MAIN
@@ -34,6 +35,7 @@ int main(int argc, const char *argv[])
   // USAGE ------------
   // WRITE TO FILE:   -w ./filein.wav ./fileout.wav 1,2,3,4,5,6,7,8
   // READ FROM AUDIO: -a ./file.wav
+  // READ AUDIO SR:   -s ./file.wav
   // READ FROM MIDI:  -m ./file.mid [48000] # not passing a sample rate will return an item
 
   auto argErr = []()
@@ -57,6 +59,13 @@ int main(int argc, const char *argv[])
     if (args != 1)
       return argErr();
     return readAudioMarkers(argv[2]);
+    break;
+  }
+  case 's': // GET AUDIO SAMPLE RATE
+  {
+    if (args != 1)
+      return argErr();
+    return readAudioSampleRate(argv[2]);
     break;
   }
   case 'm': // READ or COUNT MIDI MARKERS
@@ -247,6 +256,19 @@ int readMIDIMarkers(const char *file_path, int SR)
     mstring << marker;
   }
   std::cout << "MARKERS " << mstring.str() << std::endl;
+
+  return 0;
+}
+
+int readAudioSampleRate(const char *file_path)
+{
+  // load file
+  SF_INFO sf_info{};
+  SNDFILE *file = sf_open(file_path, SFM_READ, &sf_info);
+  if (!file)
+    return err("FILE_OPEN_FAILED");
+
+  std::cout << "SR " << sf_info.samplerate << std::endl;
 
   return 0;
 }
