@@ -9,8 +9,9 @@ import {
 import { Transition } from '@headlessui/react';
 import { useOpenFileDialog } from './components/FileDropState';
 import MarkerRow from './components/MarkerRow';
-import { Search as IconSearch, RotateCcwIcon } from 'lucide-react';
+import { RotateCcwIcon } from 'lucide-react';
 import FileSave from './components/FileSave';
+import { SearchButton } from './components/SearchButton';
 
 export default function App() {
   const [isFileOnTop] = useFileOnTop();
@@ -60,12 +61,7 @@ export default function App() {
               <p className="flex-1 truncate text-zinc-300">
                 {files.audio?.name}
               </p>
-              <button
-                aria-label="select files"
-                className="flex size-5 items-center justify-center rounded-full p-px text-zinc-400 transition group-hover:text-zinc-200"
-              >
-                <IconSearch className="h-full w-auto" />
-              </button>
+              <SearchButton className="group-hover:text-zinc-200" />
             </div>
           </div>
 
@@ -73,13 +69,7 @@ export default function App() {
           <div className="flex flex-1 flex-col gap-1">
             <div className="flex flex-row justify-between px-3">
               <div className="">Choose markers to include:</div>
-              <button
-                aria-label="select files"
-                onClick={() => openFileDialog?.()}
-                className="flex size-5 items-center justify-center rounded-full p-px text-zinc-400 transition hover:text-zinc-200"
-              >
-                <IconSearch className="h-full w-auto" />
-              </button>
+              <SearchButton onClick={() => openFileDialog?.()} />
             </div>
 
             {/* list */}
