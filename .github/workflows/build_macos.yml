@@ -1,0 +1,49 @@
+name: build macOS
+on:
+  push:
+    tags: ['*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      # prepare codebase
+      - uses: actions/checkout@v4.1.6
+
+      # prep system
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+      - name: install pnpm
+        uses: pnpm/action-setup@v4.0.0
+        with:
+          version: latest
+      - name: install node
+        uses: actions/setup-node@v4.0.2
+        with:
+          cache: 'pnpm'
+      - name: install brew packages
+        run: brew install rust cmake libsndfile
+
+      # cmake build
+      - name: dependencies
+        run: |
+          git submodule update --init
+      - name: cmake build
+        run: |
+          cd src-cpp
+          cmake -Bbuild
+          cmake --build build --config Release
+
+      # javascript
+      - name: pnpm install
+        run:
+          pnpm install
+
+          # compile and upload
+      - name: bundle
+        run: pnpm tauri build
+      - name: upload binary
+        uses: softprops/action-gh-release@v2.1.0
+        with:
+          files: src-tauri/target/release/bundle/dmg/*.dmg
