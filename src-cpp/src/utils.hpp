@@ -1,8 +1,7 @@
-#include <iostream>
+#pragma once
+
 #include <string>
 
-int err(const std::string code)
-{
-  std::cout << "ERROR " << code << std::endl;
-  return 1;
-}
+#include "CONSTANTS.hpp"
+
+int err(const std::string code);

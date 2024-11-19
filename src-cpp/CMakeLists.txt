@@ -41,6 +41,9 @@ target_sources(${TARGET_NAME}
   ${HEADER_FILES}
 
   src/main.cpp
+  src/audio.cpp
+  src/midi.cpp
+  src/utils.cpp
 )
 
 # LINK LIBRARIES
