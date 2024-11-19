@@ -27,13 +27,13 @@ export default defineConfig(async () => ({
       : undefined,
     watch: {
       // 3. tell vite to ignore watching `src-tauri`
-      ignored: ['**/src-tauri/**'],
+      ignored: ['**/src-tauri/**', '!**/src-tauri/bin/**'],
     },
   },
 
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './src-tsx'),
     },
   },
 }));
