@@ -1,17 +1,17 @@
 import clsx from 'clsx';
 import {
+  MAX_MARKERS,
   useFileOnTop,
-  useFullReset,
   useInputFileObjects,
-  useMarkerCount,
   useMarkers,
+  useMarkersList,
 } from './ctx/fileDrop';
 import { Transition } from '@headlessui/react';
 import { useOpenFileDialog } from './components/FileDropState';
 import MarkerRow from './components/MarkerRow';
-import { RotateCcwIcon } from 'lucide-react';
 import FileSave from './components/FileSave';
 import { SearchButton } from './components/SearchButton';
+import Header from './components/Header';
 
 export default function App() {
   const [isFileOnTop] = useFileOnTop();
@@ -20,33 +20,14 @@ export default function App() {
   const [markers] = useMarkers();
 
   const openFileDialog = useOpenFileDialog();
-  const reset = useFullReset();
 
-  const totalMarkers = useMarkerCount();
+  const { length: totalMarkers } = useMarkersList();
 
   return (
     <>
       <div className="flex min-h-dvh flex-col gap-2 p-2 pt-0">
         {/* header */}
-        <header className="group flex flex-row items-center justify-between rounded-b-xl bg-zinc-800 px-4 py-1">
-          <div className="flex flex-row items-center gap-4">
-            <h1 className="text-lg">wavslice.</h1>
-          </div>
-          <div className="relative flex flex-row items-center justify-end">
-            <div className="text-xs font-bold text-zinc-400">[foster]</div>
-
-            {/* reset button */}
-            <div className="absolute -inset-2 -ml-8 flex select-none flex-row items-center justify-end bg-zinc-800 pl-8 pr-1 opacity-0 transition duration-200 group-hover:opacity-100 has-[:focus]:opacity-100">
-              <button
-                aria-label="reset"
-                onClick={reset}
-                className="size-6 rounded-md bg-zinc-900/70 p-1 text-slate-300 transition hover:bg-red-600"
-              >
-                <RotateCcwIcon className="h-full w-auto" />
-              </button>
-            </div>
-          </div>
-        </header>
+        <Header />
 
         {/* main section */}
         <main className="relative flex flex-1 flex-col gap-6 p-6 text-sm">
@@ -75,18 +56,21 @@ export default function App() {
             {/* list */}
             <div className="outsi flex flex-col divide-y divide-zinc-900/70 overflow-hidden rounded-lg border border-zinc-400 bg-zinc-800 p-px text-xs">
               <MarkerRow
+                markerName="audio"
                 name="Original Audio File"
                 markers={markers.audio.length}
                 enabled={!!files.audio}
               />
               <MarkerRow
+                markerName="midi"
                 name={files.midi?.name}
-                defaultName="add a MIDI file"
+                defaultName="Add a MIDI file..."
                 markers={markers.midi.length}
                 enabled={!!files.midi}
               />
               <MarkerRow
-                defaultName="add a TXT file"
+                markerName="text"
+                defaultName="Add a text file..."
                 markers={markers.text.length}
                 enabled={false}
               />
@@ -95,24 +79,13 @@ export default function App() {
             <div className="mt-2 flex flex-row justify-end px-2">
               <div className="text-right text-xs">
                 <span>{totalMarkers}</span>
-                <span className="text-zinc-400"> / 100 max</span>
+                <span className="text-zinc-400"> / {MAX_MARKERS} max</span>
               </div>
             </div>
           </div>
 
           {/* save section */}
-          <div className="flex flex-row">
-            <div className="flex-1 text-xs text-zinc-400">
-              <p className="px-3">
-                You can drag files into this window, or select both files at the
-                same time.
-              </p>
-            </div>
-
-            <div className="">
-              <FileSave />
-            </div>
-          </div>
+          <FileSave />
 
           {/* drag overlay */}
           <Transition show={isFileOnTop}>

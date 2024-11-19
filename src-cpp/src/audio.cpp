@@ -103,6 +103,10 @@ int AUDIO::readMarkers(const char *file_path)
   // print sample rate
   std::cout << "SR " << sf_info.samplerate << std::endl;
 
+  // get file length
+  int samples = sf_seek(file, 0, SEEK_END);
+  std::cout << "LENGTH " << samples << std::endl;
+
   // get cues
   SF_CUES cues{};
   int has_markers = sf_command(file, SFC_GET_CUE, &cues, sizeof(cues));

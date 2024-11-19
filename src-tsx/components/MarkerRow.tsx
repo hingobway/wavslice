@@ -1,10 +1,13 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect } from 'react';
 
 import { Check } from 'lucide-react';
 import { Checkbox } from '@headlessui/react';
+import { Markers, useSelectedMarkers } from '@/ctx/fileDrop';
+import { SetState } from '@/utils/reactTypes';
 
 export default function MarkerRow({
   markers: count,
+  markerName,
   enabled,
   name,
   defaultName,
@@ -13,8 +16,16 @@ export default function MarkerRow({
   defaultName?: ReactNode;
   enabled?: boolean;
   markers: number;
+  markerName: keyof Markers;
 }) {
-  const [checked, setChecked] = useState(true);
+  const [sel, setSel] = useSelectedMarkers();
+  const checked = sel[markerName];
+  const setChecked: SetState<typeof checked> = (arg) => {
+    setSel((prev) => ({
+      ...prev,
+      [markerName]: typeof arg === 'function' ? arg(prev[markerName]) : arg,
+    }));
+  };
 
   useEffect(() => {
     if (enabled) setChecked(!!count);
@@ -40,7 +51,7 @@ export default function MarkerRow({
           <Check className="hidden size-3 text-zinc-100 group-data-[checked]/c:block" />
         </Checkbox>
         <div
-          className="flex-1 data-[d]:text-zinc-400"
+          className="flex-1 truncate text-nowrap data-[d]:text-zinc-400"
           data-d={!(enabled && !!name) || null}
         >
           {name ?? (defaultName && <span>{defaultName}</span>)}

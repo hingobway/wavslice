@@ -2,7 +2,13 @@ import { Command } from '@tauri-apps/plugin-shell';
 
 const BINARY = 'bin/markers';
 
-type ResponseType = 'MARKERS' | 'COUNT' | 'MARKERS_NONE' | 'SR' | 'ERROR';
+type ResponseType =
+  | 'MARKERS'
+  | 'COUNT'
+  | 'MARKERS_NONE'
+  | 'SR'
+  | 'LENGTH'
+  | 'ERROR';
 
 // --------------------------------------------------------
 // COMMANDS
@@ -10,6 +16,7 @@ type ResponseType = 'MARKERS' | 'COUNT' | 'MARKERS_NONE' | 'SR' | 'ERROR';
 export async function readAudioFile(filePath: string) {
   let markers: number[] = [];
   let SR = 0;
+  let samples = 0;
 
   const success = await runCommand(['-a', filePath], (line) => {
     // process incoming markers
@@ -25,9 +32,17 @@ export async function readAudioFile(filePath: string) {
       const n = parseInt(sr);
       if (Number.isFinite(n)) SR = n;
     }
+
+    // get length
+    const samp = getMsg('LENGTH', line);
+    if (samp) {
+      const n = parseInt(samp);
+      if (Number.isFinite(n)) samples = n;
+    }
   });
 
-  if (success && typeof SR === 'number') return { markers, sampleRate: SR };
+  if (success && typeof SR === 'number')
+    return { markers, sampleRate: SR, samples };
   return null;
 }
 
@@ -61,15 +76,27 @@ export async function readMidiFile(
   return count;
 }
 
+export async function writeAudioFile(
+  inputFile: string,
+  outputFile: string,
+  markers: number[],
+) {
+  const mlist = markers.join(',');
+
+  const success = await runCommand(['-w', inputFile, outputFile, mlist]);
+
+  return success;
+}
+
 // --------------------------------------------------------
 // UTILS
 
-function runCommand(args: string[], msgHandler: (line: string) => void) {
+function runCommand(args: string[], msgHandler?: (line: string) => void) {
   return new Promise<boolean>((resolve) => {
     const cmd = Command.sidecar(BINARY, args);
     cmd.stdout.on('data', (line) => {
       if (checkErr(line)) return;
-      msgHandler(line);
+      msgHandler?.(line);
     });
     cmd.on('close', (data) => resolve(!data.code));
     cmd.spawn();
