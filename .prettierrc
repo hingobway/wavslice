@@ -2,5 +2,9 @@
   "plugins": [
     "prettier-plugin-tailwindcss"
   ],
+  "tailwindFunctions": [
+    "clx",
+    "clmx"
+  ],
   "singleQuote": true
 }

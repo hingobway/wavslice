@@ -16,17 +16,7 @@
         {
           "name": "bin/markers",
           "sidecar": true,
-          "args": [
-            {
-              "validator": ".+"
-            },
-            {
-              "validator": ".+"
-            },
-            {
-              "validator": ".+"
-            }
-          ]
+          "args": true
         }
       ]
     }

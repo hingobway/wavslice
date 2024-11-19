@@ -1,5 +1,14 @@
 {
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "cmake.sourceDirectory": "${workspaceFolder}/src-cpp",
-  "cmake.buildDirectory": "${workspaceFolder}/src-cpp/build"
+  "cmake.buildDirectory": "${workspaceFolder}/src-cpp/build",
+
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^;]*);", "'([^']*)'"],
+    ["clsx\\(([^;]*);", "\"([^\"]*)\""],
+    ["clsx\\(([^;]*);", "\\`([^\\`]*)\\`"],
+    ["clmx\\(([^;]*);", "'([^']*)'"],
+    ["clmx\\(([^;]*);", "\"([^\"]*)\""],
+    ["clmx\\(([^;]*);", "\\`([^\\`]*)\\`"]
+  ]
 }
