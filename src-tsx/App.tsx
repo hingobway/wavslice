@@ -12,6 +12,8 @@ import MarkerRow from './components/MarkerRow';
 import FileSave from './components/FileSave';
 import { SearchButton } from './components/SearchButton';
 import Header from './components/Header';
+import { useEffect } from 'react';
+import { isDev } from './utils/dev';
 
 export default function App() {
   const [isFileOnTop] = useFileOnTop();
@@ -22,6 +24,15 @@ export default function App() {
   const openFileDialog = useOpenFileDialog();
 
   const { length: totalMarkers } = useMarkersList();
+
+  // disabled right-click in production
+  useEffect(() => {
+    const cb = (ev: Event) => {
+      if (!isDev) ev.preventDefault();
+    };
+    document.addEventListener('contextmenu', cb);
+    return () => document.removeEventListener('contextmenu', cb);
+  }, []);
 
   return (
     <>
