@@ -3,12 +3,14 @@ import {
   useFileOnTop,
   useFullReset,
   useInputFileObjects,
+  useMarkerCount,
   useMarkers,
 } from './ctx/fileDrop';
 import { Transition } from '@headlessui/react';
 import { useOpenFileDialog } from './components/FileDropState';
 import MarkerRow from './components/MarkerRow';
-import { Search as IconSearch } from 'lucide-react';
+import { Search as IconSearch, RotateCcwIcon } from 'lucide-react';
+import FileSave from './components/FileSave';
 
 export default function App() {
   const [isFileOnTop] = useFileOnTop();
@@ -18,6 +20,8 @@ export default function App() {
 
   const openFileDialog = useOpenFileDialog();
   const reset = useFullReset();
+
+  const totalMarkers = useMarkerCount();
 
   return (
     <>
@@ -33,10 +37,11 @@ export default function App() {
             {/* reset button */}
             <div className="absolute -inset-2 -ml-8 flex select-none flex-row items-center justify-end bg-zinc-800 pl-8 pr-1 opacity-0 transition duration-200 group-hover:opacity-100 has-[:focus]:opacity-100">
               <button
+                aria-label="reset"
                 onClick={reset}
-                className="group-hover:enabled rounded-md border border-red-600 px-2 text-sm text-red-600 transition hover:bg-red-800/10 focus:outline focus:outline-1 focus:outline-offset-2 focus:outline-red-600"
+                className="size-6 rounded-md bg-zinc-900/70 p-1 text-slate-300 transition hover:bg-red-600"
               >
-                reset
+                <RotateCcwIcon className="h-full w-auto" />
               </button>
             </div>
           </div>
@@ -99,7 +104,7 @@ export default function App() {
 
             <div className="mt-2 flex flex-row justify-end px-2">
               <div className="text-right text-xs">
-                <span>23</span>
+                <span>{totalMarkers}</span>
                 <span className="text-zinc-400"> / 100 max</span>
               </div>
             </div>
@@ -115,9 +120,7 @@ export default function App() {
             </div>
 
             <div className="">
-              <button className="rounded-full bg-sky-700 px-6 py-1 text-sm font-bold opacity-90 transition-all hover:opacity-100 hover:shadow-lg focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-sky-800">
-                Save
-              </button>
+              <FileSave />
             </div>
           </div>
 

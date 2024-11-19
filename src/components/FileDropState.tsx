@@ -43,6 +43,7 @@ export default function FileDropState({ children }: Children) {
   // open file dialog
   const selectFiles = useCallback(async () => {
     const f = await open({
+      title: 'Select an audio, text, or MIDI file, or all three at once.',
       multiple: true,
       filters: [{ name: 'files', extensions: ['wav', 'mid', 'txt'] }],
     });

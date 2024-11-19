@@ -195,7 +195,7 @@ int readAudioMarkers(const char *file_path)
   int has_markers = sf_command(file, SFC_GET_CUE, &cues, sizeof(cues));
   if (!has_markers)
   {
-    std::cout << "MARKERS 0" << std::endl;
+    std::cout << "MARKERS_NONE" << std::endl;
     return 0;
   }
 
