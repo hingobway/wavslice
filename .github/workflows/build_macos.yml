@@ -51,9 +51,9 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          APPLE_CERTIFICATE: ${{ secrets.CERT_P12 }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.CERT_P12_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.CERT_APPLICATION }}
+          # APPLE_CERTIFICATE: ${{ secrets.CERT_P12 }}
+          # APPLE_CERTIFICATE_PASSWORD: ${{ secrets.CERT_P12_PASSWORD }}
+          # APPLE_SIGNING_IDENTITY: ${{ secrets.CERT_APPLICATION }}
 
       # upload
       - name: upload binary
