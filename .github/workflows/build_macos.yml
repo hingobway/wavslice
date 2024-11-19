@@ -39,12 +39,23 @@ jobs:
 
       # javascript
       - name: pnpm install
-        run:
-          pnpm install
+        run: pnpm install
 
-          # compile and upload
+      # compile
+      - name: prep cert
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.CERT_P12 }}
+          p12-password: ${{ secrets.CERT_P12_PASSWORD }}
       - name: bundle
-        run: pnpm tauri build
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLE_CERTIFICATE: ${{ secrets.CERT_P12 }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.CERT_P12_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.CERT_APPLICATION }}
+
+      # upload
       - name: upload binary
         uses: softprops/action-gh-release@v2.1.0
         with:
