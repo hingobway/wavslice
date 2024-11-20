@@ -36,7 +36,7 @@ export default function App() {
 
   return (
     <>
-      <div className="flex min-h-dvh flex-col gap-2 p-2 pt-0">
+      <div className="fixed inset-0 flex flex-col gap-2 p-2 pt-0">
         {/* header */}
         <Header />
 

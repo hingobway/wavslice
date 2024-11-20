@@ -8,7 +8,7 @@ import {
 
 import MIME from 'mime/lite';
 import { useCallback } from 'react';
-import { readAudioFile, readMidiFile } from '@/func/rpc';
+import { readAudioFile, readMidiFile } from '@/rpc/commands';
 
 export const MAX_MARKERS = 100;
 

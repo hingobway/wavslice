@@ -1,40 +1,27 @@
-import { Command } from '@tauri-apps/plugin-shell';
-
-const BINARY = 'bin/markers';
-
-type ResponseType =
-  | 'MARKERS'
-  | 'COUNT'
-  | 'MARKERS_NONE'
-  | 'SR'
-  | 'LENGTH'
-  | 'ERROR';
-
-// --------------------------------------------------------
-// COMMANDS
+import * as rpc from './rpc';
 
 export async function readAudioFile(filePath: string) {
   let markers: number[] = [];
   let SR = 0;
   let samples = 0;
 
-  const success = await runCommand(['-a', filePath], (line) => {
+  const success = await rpc.runCommand(['-a', filePath], (line) => {
     // process incoming markers
-    const ms = getMsg('MARKERS', line);
+    const ms = rpc.getMsg('MARKERS', line);
     if (ms) {
       markers = parseMarkersString(ms);
       return;
     }
 
     // get sample rate
-    const sr = getMsg('SR', line);
+    const sr = rpc.getMsg('SR', line);
     if (sr) {
       const n = parseInt(sr);
       if (Number.isFinite(n)) SR = n;
     }
 
     // get length
-    const samp = getMsg('LENGTH', line);
+    const samp = rpc.getMsg('LENGTH', line);
     if (samp) {
       const n = parseInt(samp);
       if (Number.isFinite(n)) samples = n;
@@ -60,14 +47,14 @@ export async function readMidiFile(
 
   const args = ['-m', filePath];
   if (sampleRate) args.push('' + sampleRate);
-  const success = await runCommand(args, (line) => {
-    const ms = getMsg('MARKERS', line);
+  const success = await rpc.runCommand(args, (line) => {
+    const ms = rpc.getMsg('MARKERS', line);
     if (ms) {
       markers = parseMarkersString(ms);
       return;
     }
 
-    const c = getMsg('COUNT', line);
+    const c = rpc.getMsg('COUNT', line);
     if (c !== null && Number.isFinite(parseInt(c))) count = parseInt(c);
   });
 
@@ -83,32 +70,13 @@ export async function writeAudioFile(
 ) {
   const mlist = markers.join(',');
 
-  const success = await runCommand(['-w', inputFile, outputFile, mlist]);
+  const success = await rpc.runCommand(['-w', inputFile, outputFile, mlist]);
 
   return success;
 }
 
 // --------------------------------------------------------
 // UTILS
-
-function runCommand(args: string[], msgHandler?: (line: string) => void) {
-  return new Promise<boolean>((resolve) => {
-    const cmd = Command.sidecar(BINARY, args);
-    cmd.stdout.on('data', (line) => {
-      if (checkErr(line)) return;
-      msgHandler?.(line);
-    });
-    cmd.on('close', (data) => resolve(!data.code));
-    cmd.spawn();
-  });
-}
-
-function getMsg(responseType: ResponseType, line: string) {
-  const regex = new RegExp(`^${responseType} (.+)\\n$`);
-  const m = line.match(regex);
-
-  return m?.[1] ?? null;
-}
 
 function parseMarkersString(mlist: string) {
   const markers: number[] = [];
@@ -120,13 +88,4 @@ function parseMarkersString(mlist: string) {
     if (Number.isFinite(n)) markers.push(n);
   }
   return markers;
-}
-
-function checkErr(line: string) {
-  const error = getMsg('ERROR', line);
-  if (error) {
-    console.log('BACKEND ERROR', error);
-    return true;
-  }
-  return false;
 }

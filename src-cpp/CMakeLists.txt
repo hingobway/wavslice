@@ -10,41 +10,32 @@ set(PROGRAM_NAME "markers")
 find_package(SndFile CONFIG REQUIRED)
 include(include/midifile.cmake)
 
-# FIND CORRECT BINARY NAME
-if(APPLE)
-  if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
-    set(PROC "aarch64")
-  elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-    set(PROC "x86_64")
-  else()
-    set(PROC "unknown")
-  endif()
+# DETERMINE TARGET TRIPLET FOR RUST
+execute_process(
+  COMMAND rustc "-Vv"
+  OUTPUT_VARIABLE RUST_HOST
+)
 
-  set(TARGET_NAME "${PROGRAM_NAME}-${PROC}-apple-darwin")
+if(${RUST_HOST} MATCHES "host: ([^ \t\r\n]+)")
+  set(RUST_HOST ${CMAKE_MATCH_1})
 else()
-  set(TARGET_NAME ${PROGRAM_NAME})
-  message(WARNING "Only CLI functionality is available on non MacOS platforms.")
+  message(FATAL_ERROR "Failed to determine rust-compatible host name for this machine. Make sure you have installed rust and that the rustc command-line tool is accessible.")
 endif()
 
 # PREP TARGET
+set(TARGET_NAME "${PROGRAM_NAME}-${RUST_HOST}")
 add_executable(${TARGET_NAME})
 target_compile_options(${TARGET_NAME} PRIVATE -Wall)
 
 set_target_properties(${TARGET_NAME} PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../src-tauri/bin"
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../src-tauri/bin"
 )
 
 # ADD FILES
-file(GLOB_RECURSE HEADER_FILES src/*.hpp)
-target_sources(${TARGET_NAME}
-  PRIVATE
-  ${HEADER_FILES}
-
-  src/main.cpp
-  src/audio.cpp
-  src/midi.cpp
-  src/utils.cpp
-)
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp")
+target_sources(${TARGET_NAME} PRIVATE ${SOURCE_FILES})
 
 # LINK LIBRARIES
 target_link_libraries(${TARGET_NAME}

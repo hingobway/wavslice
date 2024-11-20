@@ -2,22 +2,49 @@
 
 ![wavslice mockups](https://github.com/user-attachments/assets/de4fbccf-ff67-42b2-8cb8-e52169cd9c2e)
 
-### building manually
+Embed markers from your favorite DAW into audio files, particularly for use with QLab slices.
 
-the app is currently reliably tested only on arm64 macOS.
+## download
 
-dependencies:
+The app is prebuilt for apple silicon [here](https://github.com/hingobway/wavslice/releases), but it is currently unsigned. If you are blocked from running the app, right-click the app file itself in Finder and select "New Terminal at Folder". Then run
 
-- C/C++ (`xcode-select --install`)
-- [pnpm](pnpm.io)
-- [rust](rust-lang.org)
+```
+xattr -dr com.apple.quarantine .
+```
+
+It should now run normally.
+
+## Building
+
+You'll need the following software to build the app:
+
+- C/C++ build tools (XCode/Visual Studio)
+- [git](git-scm.com)
 - [cmake](cmake.org)
+- [rust](rust-lang.org)
+- [node](nodejs.org)
+- [pnpm](pnpm.io)
+- [homebrew](brew.sh) (macOS - strongly recommended)
+
+### Auto build script (macOS)
+
+A simple build script is available for macOS, which you can run once you've installed all of the above dependencies.
+
+```
+$ curl -fsSL https://h-n.me/install_wavslice | bash
+```
+
+The script will download and build the codebase for you. The app will be placed wherever you run the command.
+
+### manual build instructions
 
 this repository uses submodules for some C++ dependencies. after cloning, run this command to download dependencies:
 
 ```sh
 $ git submodule update --init
 ```
+
+You'll also need [libsndfile](https://github.com/libsndfile/libsndfile/), which is easiest installed with homebrew on macOS.
 
 build C++ code using:
 

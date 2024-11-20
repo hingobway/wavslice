@@ -3,7 +3,8 @@ import {
   useInputFileObjects,
   useMarkersList,
 } from '@/ctx/fileDrop';
-import { writeAudioFile } from '@/func/rpc';
+import { writeAudioFile } from '@/rpc/commands';
+import { useLoading } from '@/utils/transition';
 import { Transition } from '@headlessui/react';
 import { save } from '@tauri-apps/plugin-dialog';
 import clsx from 'clsx';
@@ -17,7 +18,6 @@ export default function FileSave() {
   const markers = useMarkersList();
   const reset = useFullReset();
 
-  const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<'SUCCESS' | 'ERROR' | null>(null);
   useEffect(() => {
     let tm: ReturnType<typeof setTimeout>;
@@ -26,29 +26,34 @@ export default function FileSave() {
     return () => clearTimeout(tm);
   }, [status]);
 
+  const [isLoading, loading] = useLoading();
+
   // handle save
-  const submit = useCallback(async () => {
-    setIsLoading(true);
+  const submit = useCallback(() => {
+    loading(async () => {
+      if (!files.audio) return;
 
-    if (!files.audio) return;
+      // prompt output path
+      const outputFile = await save({
+        title: 'Save output audio file:',
+        defaultPath: files.audio?.path,
+        filters: [
+          {
+            name: 'allowed',
+            extensions: ['wav'],
+          },
+        ],
+      });
+      if (!outputFile) return;
+      const success = await writeAudioFile(
+        files.audio.path,
+        outputFile,
+        markers,
+      );
 
-    // prompt output path
-    const outputFile = await save({
-      title: 'Save output audio file:',
-      defaultPath: files.audio?.path,
-      filters: [
-        {
-          name: 'allowed',
-          extensions: ['wav'],
-        },
-      ],
+      setStatus(success ? 'SUCCESS' : 'ERROR');
+      if (success) reset();
     });
-    if (!outputFile) return;
-    const success = await writeAudioFile(files.audio.path, outputFile, markers);
-
-    setStatus(success ? 'SUCCESS' : 'ERROR');
-    if (success) reset();
-    setIsLoading(false);
   }, [files.audio, markers]);
 
   return (
