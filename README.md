@@ -1,6 +1,6 @@
 # wavslice.
 
-![wavslice mockups](https://github.com/user-attachments/assets/de4fbccf-ff67-42b2-8cb8-e52169cd9c2e)
+![wavslice mockups](https://github.com/user-attachments/assets/9a0793ea-7e3c-4a97-8d22-c9aded662dc4)
 
 Embed markers from your favorite DAW into audio files, particularly for use with QLab slices.
 
