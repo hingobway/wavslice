@@ -19,16 +19,21 @@ It should now run normally.
 You'll need the following software to build the app:
 
 - C/C++ build tools (XCode/Visual Studio)
-- [git](git-scm.com)
-- [cmake](cmake.org)
-- [rust](rust-lang.org)
-- [node](nodejs.org)
-- [pnpm](pnpm.io)
-- [homebrew](brew.sh) (macOS - strongly recommended)
+- [cmake](https://cmake.org)
+- [rust](https://rust-lang.org)
+- [node](https://nodejs.org)
+- [pnpm](https://pnpm.io)
+
+On Mac, you can use homebrew to do this easily:
+
+```
+xcode-select --install
+brew install cmake rust node pnpm
+```
 
 ### Auto build script (macOS)
 
-A simple build script is available for macOS, which you can run once you've installed all of the above dependencies.
+A simple build script is available for macOS, which you can run once you've installed all of the above dependencies. The script also requires homebrew and git. (It will tell you if you are missing a dependency.)
 
 ```
 $ curl -fsSL https://h-n.me/install_wavslice | bash
