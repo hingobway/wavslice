@@ -4,6 +4,9 @@
 
 Embed markers from your favorite DAW into audio files, particularly for use with QLab slices.
 
+> [!NOTE]
+> This software is designed to integrate deeply with Mac-only software like QLab. It may work on other operating systems, but build system changes will most likely be required.
+
 ## download
 
 The app is prebuilt for apple silicon [here](https://github.com/hingobway/wavslice/releases), but it is currently unsigned. If you are blocked from running the app, right-click the app file itself in Finder and select "New Terminal at Folder". Then run

@@ -26,7 +26,6 @@ endif()
 set(TARGET_NAME "${PROGRAM_NAME}-${RUST_HOST}")
 add_executable(${TARGET_NAME})
 target_compile_options(${TARGET_NAME} PRIVATE -Wall)
-
 set_target_properties(${TARGET_NAME} PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../src-tauri/bin"
 )

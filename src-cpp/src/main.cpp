@@ -3,8 +3,9 @@
 #include <cstring>
 
 #include "utils.hpp"
-#include "midi.hpp"
 #include "audio.hpp"
+#include "midi.hpp"
+#include "text.hpp"
 
 // ------------------------------------------------
 // MAIN
@@ -73,8 +74,19 @@ int main(int argc, const char *argv[])
   case 't': // READ TEXT FILE MARKERS
   {
 
-    if (args != 1)
+    if (!(args == 1 || args == 2))
       return argErr();
+    int sr{};
+    try
+    {
+      sr = args == 2 ? std::stoi(argv[3]) : 0;
+    }
+    catch (const std::exception &)
+    {
+      return argErr();
+    }
+
+    return TEXT::readMarkersQLab(argv[2], sr);
 
     break;
   }
