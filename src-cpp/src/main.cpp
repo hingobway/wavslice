@@ -86,7 +86,7 @@ int main(int argc, const char *argv[])
       return argErr();
     }
 
-    return TEXT::readMarkersQLab(argv[2], sr);
+    return TEXT::readMarkers(argv[2], sr);
 
     break;
   }

@@ -29,7 +29,7 @@ git clone https://github.com/hingobway/wavslice.git .WAVSLICETMP
 cd .WAVSLICETMP
 
 git submodule update --init
-brew install libsndfile
+brew install libsndfile boost
 pnpm install
 
 echo DONE.

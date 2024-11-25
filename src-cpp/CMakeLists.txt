@@ -8,6 +8,7 @@ set(PROGRAM_NAME "markers")
 
 # PACKAGE INCLUDE
 find_package(SndFile CONFIG REQUIRED)
+find_package(Boost CONFIG REQUIRED COMPONENTS locale)
 include(include/midifile.cmake)
 
 # DETERMINE TARGET TRIPLET FOR RUST
@@ -40,5 +41,6 @@ target_sources(${TARGET_NAME} PRIVATE ${SOURCE_FILES})
 target_link_libraries(${TARGET_NAME}
   PRIVATE
   SndFile::sndfile
+  Boost::locale
   midifile
 )

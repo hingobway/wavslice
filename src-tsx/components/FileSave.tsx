@@ -86,7 +86,7 @@ export default function FileSave() {
         <div className="mb-0.5">
           <button
             onClick={submit}
-            disabled={isLoading || !files.audio || !markers.length}
+            disabled={isLoading || !files.audio}
             data-l={isLoading || null}
             data-nl={!isLoading || null}
             className={clsx(

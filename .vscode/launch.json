@@ -20,6 +20,7 @@
       "args": ["-a", "000.wav"]
       // "args": ["-s", "000.wav"]
       // "args": ["-m", "aud/single.mid", "48000"]
+      // "args": ["-t", "aud/qlab.txt", "48000"]
     }
   ]
 }

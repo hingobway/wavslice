@@ -2,7 +2,7 @@ import { clmx } from '@/utils/classConcat';
 import { FolderOpenIcon } from 'lucide-react';
 import { forwardRef } from 'react';
 
-export const SearchButton = forwardRef<
+const SearchButton = forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<'button'>
 >(({ className, ...props }, ref) => {
@@ -23,3 +23,4 @@ export const SearchButton = forwardRef<
   );
 });
 SearchButton.displayName = 'SearchButton';
+export default SearchButton;

@@ -30,8 +30,8 @@ int AUDIO::modeWrite(const char *path_in, const char *path_out, const char *m_st
   {
     return err("INVALID_MARKERS");
   }
-  if (!markers.size())
-    return err("MISSING_MARKERS");
+  // if (!markers.size())
+  //   return err("MISSING_MARKERS");
 
   // sort markers in time order
   std::sort(markers.begin(), markers.end());

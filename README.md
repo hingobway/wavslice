@@ -52,7 +52,7 @@ this repository uses submodules for some C++ dependencies. after cloning, run th
 $ git submodule update --init
 ```
 
-You'll also need [libsndfile](https://github.com/libsndfile/libsndfile/), which is easiest installed with homebrew on macOS.
+You'll also need [libsndfile](https://github.com/libsndfile/libsndfile/) and [boost](https://www.boost.org/), both of which are easiest installed with homebrew on macOS.
 
 build C++ code using:
 

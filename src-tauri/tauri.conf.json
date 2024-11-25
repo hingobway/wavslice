@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "wavslice.",
+  "productName": "wavslice",
   "version": "0.1.1",
   "identifier": "com.hingobway.wavmarkers",
   "build": {
@@ -12,10 +12,13 @@
   "app": {
     "windows": [
       {
-        "title": "wavslice.",
+        "label": "main",
+        "title": "wavslice",
         "width": 400,
         "height": 400,
-        "resizable": false
+        "resizable": false,
+        "hiddenTitle": true,
+        "titleBarStyle": "Overlay"
       }
     ],
     "security": {

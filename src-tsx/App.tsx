@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { Transition } from '@headlessui/react';
+
 import clsx from 'clsx';
 import {
   MAX_MARKERS,
@@ -6,14 +9,14 @@ import {
   useMarkers,
   useMarkersList,
 } from './ctx/fileDrop';
-import { Transition } from '@headlessui/react';
+import { isDev } from './utils/dev';
 import { useOpenFileDialog } from './components/FileDropState';
+
+import Header from './components/Header';
 import MarkerRow from './components/MarkerRow';
 import FileSave from './components/FileSave';
-import { SearchButton } from './components/SearchButton';
-import Header from './components/Header';
-import { useEffect } from 'react';
-import { isDev } from './utils/dev';
+import SearchButton from './components/SearchButton';
+import TextFormatDialog from './components/TextFormat/TextFormatDialog';
 
 export default function App() {
   const [isFileOnTop] = useFileOnTop();
@@ -34,14 +37,16 @@ export default function App() {
     return () => document.removeEventListener('contextmenu', cb);
   }, []);
 
+  if (location.pathname === TextFormatDialog.path) return <TextFormatDialog />;
+
   return (
     <>
-      <div className="fixed inset-0 flex flex-col gap-2 p-2 pt-0">
+      <div className="fixed inset-0 flex flex-col">
         {/* header */}
         <Header />
 
         {/* main section */}
-        <main className="relative flex flex-1 flex-col gap-6 p-6 text-sm">
+        <main className="relative m-2 flex flex-1 flex-col gap-6 p-6 text-sm">
           {/* audio file */}
           <div className="flex flex-col gap-1">
             <div className="px-3">Choose audio file:</div>
@@ -52,6 +57,9 @@ export default function App() {
             >
               <p className="flex-1 truncate text-zinc-300">
                 {files.audio?.name}
+                {!files.audio && (
+                  <span className="text-zinc-600">audio.wav</span>
+                )}
               </p>
               <SearchButton className="group-hover:text-zinc-200" />
             </div>
@@ -81,7 +89,13 @@ export default function App() {
               />
               <MarkerRow
                 markerName="text"
-                defaultName="Add a text file..."
+                defaultName={<em>add a TXT file (coming soon)</em>}
+                markers={markers.text.length}
+                enabled={false}
+              />
+              <MarkerRow
+                markerName="text"
+                defaultName={<em>add a CSV file (coming soon)</em>}
                 markers={markers.text.length}
                 enabled={false}
               />
@@ -97,6 +111,14 @@ export default function App() {
 
           {/* save section */}
           <FileSave />
+
+          {/* dialog temp */}
+          <button
+            className="fixed right-1 top-8 px-2 text-zinc-700"
+            onClick={() => TextFormatDialog.create()}
+          >
+            &rarr;
+          </button>
 
           {/* drag overlay */}
           <Transition show={isFileOnTop}>

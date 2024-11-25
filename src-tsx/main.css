@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 body {
-  @apply cursor-default select-none overflow-hidden bg-zinc-900 font-sans text-zinc-100;
+  @apply cursor-default select-none overflow-hidden bg-zinc-900 font-sans text-zinc-100 antialiased;
 }
