@@ -16,7 +16,8 @@ import Header from './components/Header';
 import MarkerRow from './components/MarkerRow';
 import FileSave from './components/FileSave';
 import SearchButton from './components/SearchButton';
-import TextFormatDialog from './components/TextFormat/TextFormatDialog';
+import TextFormatDialog from './components/dialogs/TextFormatDialog';
+import RemoteSessionDialog from './components/dialogs/RemoteSessionDialog';
 
 export default function App() {
   const [isFileOnTop] = useFileOnTop();
@@ -37,7 +38,12 @@ export default function App() {
     return () => document.removeEventListener('contextmenu', cb);
   }, []);
 
+  // ROUTING
+
   if (location.pathname === TextFormatDialog.path) return <TextFormatDialog />;
+  if (location.pathname === RemoteSessionDialog.path) return <RemoteSessionDialog />;
+
+  // RENDER
 
   return (
     <>
@@ -88,14 +94,16 @@ export default function App() {
                 enabled={!!files.midi}
               />
               <MarkerRow
-                markerName="text"
-                defaultName={<em>add a TXT file (coming soon)</em>}
-                markers={markers.text.length}
-                enabled={false}
+                markerName="session"
+                name={files.session?.name}
+                defaultName="Add a DAW session..."
+                markers={markers.session.length}
+                enabled={!!files.session}
               />
               <MarkerRow
                 markerName="text"
-                defaultName={<em>add a CSV file (coming soon)</em>}
+                // name={files.text?.name}
+                defaultName={<em>add a TXT file (coming soon)</em>}
                 markers={markers.text.length}
                 enabled={false}
               />
@@ -113,12 +121,12 @@ export default function App() {
           <FileSave />
 
           {/* dialog temp */}
-          <button
+          {/* <button
             className="fixed right-1 top-8 px-2 text-zinc-700"
             onClick={() => TextFormatDialog.create()}
           >
             &rarr;
-          </button>
+          </button> */}
 
           {/* drag overlay */}
           <Transition show={isFileOnTop}>

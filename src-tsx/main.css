@@ -5,3 +5,7 @@
 body {
   @apply cursor-default select-none overflow-hidden bg-zinc-900 font-sans text-zinc-100 antialiased;
 }
+
+kbd {
+  @apply mx-0.5 rounded-md bg-white/20 px-1.5 py-0.5 text-xs;
+}

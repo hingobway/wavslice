@@ -9,6 +9,7 @@ import {
 import MIME from 'mime/lite';
 import { useCallback } from 'react';
 import { readAudioFile, readMidiFile } from '@/rpc/commands';
+import { getSessionMarkers } from '@/func/tsme';
 
 export const MAX_MARKERS = 100;
 
@@ -24,6 +25,7 @@ export type InputFiles = {
   audio?: string;
   midi?: string;
   text?: string;
+  session?: string;
 };
 type InputFilesObject = Record<keyof InputFiles, PathProps | null>;
 const inputFilesState = atom<InputFiles>({
@@ -56,6 +58,7 @@ const markersDefault: Markers = {
   audio: [],
   midi: [],
   text: [],
+  session: [],
 };
 const markersState = atom<Markers>({
   key: 'Markers',
@@ -76,7 +79,7 @@ const markersListState = selector<number[]>({
       if (!selectedMarkers[key as keyof SelectedMarkers]) continue;
       for (const marker of markersObject[key as keyof Markers]) {
         if (
-          marker >= 0 &&
+          marker > 0 &&
           (!maxSamples || marker <= maxSamples) &&
           !markers.includes(marker)
         )
@@ -94,6 +97,7 @@ const defaultSelectedMarkers: SelectedMarkers = {
   audio: false,
   midi: false,
   text: false,
+  session: false,
 };
 const selectedMarkersState = atom({
   key: 'SelectedMarkers',
@@ -101,9 +105,16 @@ const selectedMarkersState = atom({
 });
 export const useSelectedMarkers = () => useRecoilState(selectedMarkersState);
 
+const remoteConfirmState = atom({
+  key: 'RemoteConfirm',
+  default: false,
+});
+export const useRemoteConfirm = () => useRecoilState(remoteConfirmState);
+
 export const useUpdateMarkers = () => {
   const cb = useRecoilCallback(({ snapshot, set }) => async () => {
     const files = await snapshot.getPromise(inputFilesState);
+    const remoteAllowed = await snapshot.getPromise(remoteConfirmState);
 
     const markers = { ...markersDefault };
     let sampleRate = 0;
@@ -132,6 +143,13 @@ export const useUpdateMarkers = () => {
       }
     }
 
+    if (files.session && remoteAllowed) {
+      const ms = await getSessionMarkers(files.session, sampleRate).catch((e) =>
+        console.log('TSME ERROR', e?.message),
+      );
+      if (ms) markers.session = ms;
+    }
+
     set(markersState, markers);
     set(audioLengthState, audioLength);
   });
@@ -145,10 +163,15 @@ export function getPathProps(path?: string | null) {
   if (!ms) return null;
 
   return {
+    /** full absolute file path */
     path: path!,
+    /** absolute path of containing folder */
     folder: ms[1],
+    /** file name including extension */
     name: ms[2],
+    /** file extension (with no period) */
     ext: ms[3],
+    /** MIME type if found */
     mime: MIME.getType(ms[3]),
   };
 }

@@ -2,6 +2,7 @@ import {
   GlobalKeyboardHandler,
   useGlobalKeyboardShortcuts,
 } from '@/utils/globalKeyboard';
+import { relativeWindowPos } from '@/utils/relativePosition';
 import {
   getCurrentWebviewWindow,
   WebviewWindow,
@@ -14,7 +15,6 @@ export default function TextFormatDialog() {
   // close shortcut
   const handleShortcut = useCallback<GlobalKeyboardHandler>(
     (e, { withModifiers }) => {
-      console.log('HERE');
       if (e.key === 'Escape' && !withModifiers)
         getCurrentWebviewWindow().close();
     },
@@ -66,15 +66,26 @@ function FormatButton() {
 
 // ------------------------------------------------------
 
-export function createDialog() {
-  new WebviewWindow('popup', {
-    parent: 'main',
-    url: PATH,
-    title: 'Text Format',
-    width: 888,
-    height: 462,
-    resizable: false,
+export async function createDialog() {
+  const PARENT = 'main';
+  const WIDTH = 888;
+  const HEIGHT = 462;
 
+  const xy = await relativeWindowPos(PARENT, {
+    w: WIDTH,
+    center: 'x',
+    y: 32,
+  });
+
+  new WebviewWindow('popup', {
+    parent: PARENT,
+    url: PATH,
+    title: 'Dialog: Text Format',
+    width: WIDTH,
+    height: HEIGHT,
+    x: xy?.x,
+    y: xy?.y,
+    resizable: false,
     minimizable: false,
     hiddenTitle: true,
     titleBarStyle: 'overlay',

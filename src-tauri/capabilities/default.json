@@ -13,6 +13,7 @@
     "core:window:allow-close",
     "core:window:allow-show",
     "dialog:default",
+    "fs:default",
     "shell:default",
     "shell:allow-open",
     {
@@ -22,6 +23,17 @@
           "name": "bin/markers",
           "sidecar": true,
           "args": true
+        }
+      ]
+    },
+    {
+      "identifier": "http:default",
+      "allow": [
+        {
+          "url": "https://timestamps.me"
+        },
+        {
+          "url": "https://*.timestamps.me"
         }
       ]
     }
