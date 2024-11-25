@@ -4340,7 +4340,7 @@ dependencies = [
 
 [[package]]
 name = "wavslice"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "cocoa 0.25.0",
  "serde",
