@@ -26,7 +26,7 @@ jobs:
           cache: 'pnpm'
       - name: install brew packages
         run: |
-          brew reinstall pkgconf
+          brew reinstall -f pkgconf
           brew install rust cmake libsndfile boost
 
       # cmake build
