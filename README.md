@@ -1,14 +1,15 @@
 # ![wavslice](https://github.com/user-attachments/assets/2365dab5-13ad-46d5-bdd5-8285ff15b7dc)
 
-![wavslice screenshots](https://github.com/user-attachments/assets/fde5df98-be6d-4926-b897-84871ed8ceb1)
+**Embed markers from your favorite DAW into audio files, particularly for use with QLab slices.**
 
-Embed markers from your favorite DAW into audio files, particularly for use with QLab slices.
+wavslice can read audio markers from:
+
+**Audio files &bull; MIDI files (Pro Tools) &bull; Ableton Sessions &bull; Fruity Loops Sessions**  
+_coming soon:_ **Pro Tools Session Data &bull; QLab Timeline &bull; Raw Text**
+
+![wavslice screenshots](https://github.com/user-attachments/assets/705450f4-a81b-4619-9422-fad540adddfe)
 
 ---
-
-**wavslice** can read audio markers from:
-
-**Audio files &bull; MIDI files &bull; Pro Tools Session Data &bull; Ableton Session &bull; QLab Timeline &bull; Raw Text**
 
 ## Download App
 
@@ -79,7 +80,29 @@ The easiest way to get markers from Pro Tools is using a MIDI file.
 
    wavslice will create a new audio file with your markers embedded.
 
-### QLab slices from Ableton Live & FL Studio _(coming soon)_
+### QLab slices from Ableton Live & FL Studio
+
+wavslice uses [timestamps.me](https://timestamps.me) to extract markers from Ableton and Fruity Loops session files.
+
+1. **Bounce your audio from the session.**
+
+   Your bounced audio **_must_** begin at the very beginning of the session timeline.
+
+1. **Choose your session file for processing.**
+
+   Simply drag your DAW session file (should have `.als` or `.flp` extension) into wavslice.
+
+1. **Approve the remote processing prompt.**
+
+   You will be prompted to approve uploading your file to the timestamps.me server. You must have an active internet connection.
+
+   <img width="594" alt="session upload prompt" src="https://github.com/user-attachments/assets/7231472e-38c7-400e-812f-62243f85c01e">
+
+1. **Create the sliced audio file.**
+
+   If you didn't already, drag your bounced audio file into wavslice. Check that the visualization shows your markers, and export the new file.
+
+#### Manual Usage
 
 wavslice supports output from [timestamps.me](https://timestamps.me), which allows you to export markers from both of these DAWs. See their website for more, but here is the process for Ableton:
 
