@@ -90,7 +90,7 @@ export default function FileSave() {
             data-l={isLoading || null}
             data-nl={!isLoading || null}
             className={clsx(
-              'group relative overflow-hidden rounded-full bg-sky-600 bg-opacity-90 px-6 py-1 text-sm font-bold transition-all disabled:bg-zinc-600',
+              'group relative overflow-hidden rounded-md bg-sky-600 bg-opacity-90 px-4 py-1.5 text-sm font-bold transition-all disabled:bg-zinc-600',
               /* focus */ 'focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-sky-800',
               /* hover */ 'hover:enabled:bg-opacity-100 hover:enabled:shadow-lg',
             )}

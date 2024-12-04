@@ -18,6 +18,7 @@ import FileSave from './components/FileSave';
 import SearchButton from './components/SearchButton';
 import TextFormatDialog from './components/dialogs/TextFormatDialog';
 import RemoteSessionDialog from './components/dialogs/RemoteSessionDialog';
+import MarkerVis from './components/MarkerVis';
 
 export default function App() {
   const [isFileOnTop] = useFileOnTop();
@@ -73,7 +74,7 @@ export default function App() {
           </div>
 
           {/* marker selector */}
-          <div className="flex flex-1 flex-col gap-1">
+          <div className="flex flex-col gap-1">
             <div className="flex flex-row justify-between px-3">
               <div className="">Choose markers to include:</div>
               <SearchButton onClick={() => openFileDialog?.()} />
@@ -101,13 +102,13 @@ export default function App() {
                 markers={markers.session.length}
                 enabled={!!files.session}
               />
-              <MarkerRow
+              {/* <MarkerRow
                 markerName="text"
                 // name={files.text?.name}
                 defaultName={<em>add a TXT file (coming soon)</em>}
                 markers={markers.text.length}
                 enabled={false}
-              />
+              /> */}
             </div>
 
             <div className="mt-2 flex flex-row justify-end px-2">
@@ -117,6 +118,11 @@ export default function App() {
               </div>
             </div>
           </div>
+
+          <MarkerVis />
+
+          {/* divider */}
+          <div className="flex-1 border-b border-zinc-800" />
 
           {/* save section */}
           <FileSave />

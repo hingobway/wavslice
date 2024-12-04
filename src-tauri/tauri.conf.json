@@ -15,7 +15,7 @@
         "label": "main",
         "title": "wavslice",
         "width": 400,
-        "height": 400,
+        "height": 421,
         "resizable": false,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"
