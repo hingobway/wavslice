@@ -5,7 +5,7 @@
 #include "utils.hpp"
 #include "audio.hpp"
 #include "midi.hpp"
-#include "text.hpp"
+// #include "text.hpp"
 
 // ------------------------------------------------
 // MAIN
@@ -86,7 +86,8 @@ int main(int argc, const char *argv[])
       return argErr();
     }
 
-    return TEXT::readMarkers(argv[2], sr);
+    // return TEXT::readMarkers(argv[2], sr);
+    (void)sr;
 
     break;
   }

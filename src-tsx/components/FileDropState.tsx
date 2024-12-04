@@ -3,7 +3,6 @@ import {
   InputFiles,
   useFileOnTop,
   useInputFiles,
-  useMarkers,
   useRemoteConfirm,
   useUpdateMarkers,
 } from '@/ctx/fileDrop';
@@ -29,7 +28,6 @@ export default function FileDropState({ children }: Children) {
   const [, setOnTop] = useFileOnTop();
 
   const [files, setFiles] = useInputFiles();
-  const [, setMarkers] = useMarkers();
 
   const [, setConfirmed] = useRemoteConfirm();
 
@@ -45,6 +43,7 @@ export default function FileDropState({ children }: Children) {
         if (fp.mime === ('text/plain' satisfies MimeType)) newFiles.text = path;
         if (SESSION_FILE_EXTS.includes(fp.ext.toLowerCase())) {
           newFiles.session = path;
+          setConfirmed(null);
           RemoteSessionDialog.create();
         }
       }
@@ -93,10 +92,7 @@ export default function FileDropState({ children }: Children) {
     evs.push(
       ipcListen('remote_confirm')(({ payload: agreed }) => {
         setConfirmed(agreed);
-        if (!agreed) {
-          setFiles((f) => ({ ...f, session: undefined }));
-          setMarkers((c) => ({ ...c, session: [] }));
-        }
+        if (!agreed) setFiles((f) => ({ ...f, session: undefined }));
       }),
     );
 

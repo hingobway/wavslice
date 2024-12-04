@@ -8,8 +8,9 @@ set(PROGRAM_NAME "markers")
 
 # PACKAGE INCLUDE
 find_package(SndFile CONFIG REQUIRED)
-find_package(Boost CONFIG REQUIRED COMPONENTS locale)
 include(include/midifile.cmake)
+
+# find_package(Boost CONFIG REQUIRED COMPONENTS locale)
 
 # DETERMINE TARGET TRIPLET FOR RUST
 execute_process(
@@ -32,15 +33,23 @@ set_target_properties(${TARGET_NAME} PROPERTIES
 )
 
 # ADD FILES
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp")
-target_sources(${TARGET_NAME} PRIVATE ${SOURCE_FILES})
+# file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
+# "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+# "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp")
+target_sources(${TARGET_NAME} PRIVATE
+  src/main.cpp
+  src/audio.cpp
+  src/midi.cpp
+  src/utils.cpp
+
+  # src/text.cpp
+)
 
 # LINK LIBRARIES
 target_link_libraries(${TARGET_NAME}
   PRIVATE
   SndFile::sndfile
-  Boost::locale
   midifile
+
+  # Boost::locale
 )

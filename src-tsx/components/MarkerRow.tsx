@@ -2,7 +2,11 @@ import { ReactNode, useEffect } from 'react';
 
 import { Check } from 'lucide-react';
 import { Checkbox } from '@headlessui/react';
-import { Markers, useSelectedMarkers } from '@/ctx/fileDrop';
+import {
+  Markers,
+  useGlobalIsLoading,
+  useSelectedMarkers,
+} from '@/ctx/fileDrop';
 import { SetState } from '@/utils/reactTypes';
 
 export default function MarkerRow({
@@ -34,6 +38,8 @@ export default function MarkerRow({
     if (count) setChecked(true);
   }, [count]);
 
+  const isLoading = useGlobalIsLoading();
+
   return (
     <>
       <div
@@ -60,10 +66,26 @@ export default function MarkerRow({
           className="group/m text-zinc-500 group-data-[e]:text-zinc-400"
           data-w={(enabled && count) || null}
         >
-          <span className="group-data-[w]/m:text-zinc-100">{count}</span>
+          {/* loading spinner */}
+          {isLoading && (
+            <>
+              <Spinner />
+              <span className="inline-block w-0.5"></span>
+            </>
+          )}
+          {/* count */}
+          {!isLoading && (
+            <span className="group-data-[w]/m:text-zinc-100">{count}</span>
+          )}
           <span className=""> markers</span>
         </div>
       </div>
     </>
+  );
+}
+
+function Spinner() {
+  return (
+    <div className="inline-block size-2 animate-spin rounded-full border border-zinc-500 border-t-transparent" />
   );
 }

@@ -41,7 +41,8 @@ export default function App() {
   // ROUTING
 
   if (location.pathname === TextFormatDialog.path) return <TextFormatDialog />;
-  if (location.pathname === RemoteSessionDialog.path) return <RemoteSessionDialog />;
+  if (location.pathname === RemoteSessionDialog.path)
+    return <RemoteSessionDialog />;
 
   // RENDER
 

@@ -105,14 +105,22 @@ const selectedMarkersState = atom({
 });
 export const useSelectedMarkers = () => useRecoilState(selectedMarkersState);
 
-const remoteConfirmState = atom({
+const remoteConfirmState = atom<boolean | null>({
   key: 'RemoteConfirm',
-  default: false,
+  default: null,
 });
 export const useRemoteConfirm = () => useRecoilState(remoteConfirmState);
 
+const globalLoadingState = atom({
+  key: 'GlobalLoading',
+  default: false,
+});
+export const useGlobalIsLoading = () => useRecoilValue(globalLoadingState);
+
 export const useUpdateMarkers = () => {
   const cb = useRecoilCallback(({ snapshot, set }) => async () => {
+    set(globalLoadingState, true);
+
     const files = await snapshot.getPromise(inputFilesState);
     const remoteAllowed = await snapshot.getPromise(remoteConfirmState);
 
@@ -152,6 +160,7 @@ export const useUpdateMarkers = () => {
 
     set(markersState, markers);
     set(audioLengthState, audioLength);
+    set(globalLoadingState, false);
   });
   return cb;
 };

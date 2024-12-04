@@ -16,7 +16,7 @@ export async function getSessionMarkers(filepath: string, SR: number = 0) {
   const formdata = new FormData();
   formdata.append('file', new Blob([sessionFile]), fp.name);
 
-  // fetch timestamps
+  // upload session file
   const resp = await fetch('https://timestamps.me/results', {
     method: 'POST',
     redirect: 'follow',
