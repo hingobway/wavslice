@@ -65,7 +65,7 @@ export default function FileSave() {
       setStatus(success ? 'SUCCESS' : 'ERROR');
       if (success) reset();
     });
-  }, [files.audio, markers]);
+  }, [files.audio, loading, markers, reset]);
 
   return (
     <>

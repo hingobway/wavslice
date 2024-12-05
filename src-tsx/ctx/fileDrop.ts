@@ -168,7 +168,7 @@ export const useUpdateMarkers = () => {
 // -------------------------------------------
 
 export function getPathProps(path?: string | null) {
-  const ms = path?.match(/^(.+[\/\\])(([^\/\\]*)\.([^\.\/\\]+))$/);
+  const ms = path?.match(/^(.+[/\\])(([^/\\]*)\.([^./\\]+))$/);
   if (!ms) return null;
 
   return {

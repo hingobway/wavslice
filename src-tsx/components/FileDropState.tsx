@@ -11,16 +11,12 @@ import { useCallback, useEffect } from 'react';
 
 import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { open } from '@tauri-apps/plugin-dialog';
-import { createCallbackCtx } from '@/utils/callback';
 
 import { MimeType } from '@/utils/mimeTypes';
 import RemoteSessionDialog from './dialogs/RemoteSessionDialog';
 import { UnlistenFn } from '@tauri-apps/api/event';
 import { ipcListen } from '@/func/ipc';
-
-const { Provider: FileDialogProvider, useHook: useOpenFileDialog } =
-  createCallbackCtx();
-export { useOpenFileDialog };
+import { FileDialogProvider } from '@/ctx/openFileDialog';
 
 const SESSION_FILE_EXTS = ['als', 'flp'];
 
@@ -50,7 +46,7 @@ export default function FileDropState({ children }: Children) {
 
       setFiles((o) => ({ ...o, ...newFiles }));
     },
-    [setFiles],
+    [setConfirmed, setFiles],
   );
 
   // open file dialog
@@ -102,6 +98,7 @@ export default function FileDropState({ children }: Children) {
         e.then((cb) => cb());
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // GET MARKER FILE DATA

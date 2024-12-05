@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 
 import { Check } from 'lucide-react';
 import { Checkbox } from '@headlessui/react';
@@ -24,18 +24,22 @@ export default function MarkerRow({
 }) {
   const [sel, setSel] = useSelectedMarkers();
   const checked = sel[markerName];
-  const setChecked: SetState<typeof checked> = (arg) => {
-    setSel((prev) => ({
-      ...prev,
-      [markerName]: typeof arg === 'function' ? arg(prev[markerName]) : arg,
-    }));
-  };
+  const setChecked: SetState<typeof checked> = useCallback(
+    (arg) =>
+      setSel((prev) => ({
+        ...prev,
+        [markerName]: typeof arg === 'function' ? arg(prev[markerName]) : arg,
+      })),
+    [markerName, setSel],
+  );
 
   useEffect(() => {
     if (enabled) setChecked(!!count);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]);
   useEffect(() => {
     if (count) setChecked(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count]);
 
   const isLoading = useGlobalIsLoading();

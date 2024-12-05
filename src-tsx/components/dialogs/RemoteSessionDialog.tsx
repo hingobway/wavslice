@@ -27,7 +27,7 @@ export default function RemoteSessionDialog() {
       if (e.key === 'Escape') handleSubmit(false);
       if (e.key === 'Enter') handleSubmit(true);
     },
-    [],
+    [handleSubmit],
   );
   useGlobalKeyboardShortcuts(handleShortcut);
 
@@ -94,6 +94,7 @@ export default function RemoteSessionDialog() {
 
 // ------------------------------------------------------
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function createDialog() {
   const WIDTH = 481;
   const HEIGHT = 321;

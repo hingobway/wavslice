@@ -66,6 +66,7 @@ function FormatButton() {
 
 // ------------------------------------------------------
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function createDialog() {
   const PARENT = 'main';
   const WIDTH = 888;
