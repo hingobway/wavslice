@@ -142,8 +142,6 @@ export const useUpdateMarkers = () => {
             markers.audio = aud.markers;
             sampleRate = aud.sampleRate;
             audioLength = aud.samples;
-
-            console.log('AUDIO READ', aud);
           }
         }
 
@@ -184,13 +182,13 @@ export function useTSMETimestamps() {
   // function
   const [isLoading, loading] = useLoading<boolean>();
   const cb = useCallback(
-    () =>
+    (sessionFileOverride?: string) =>
       loading(async () => {
-        if (!files.session) return false;
+        if (!sessionFileOverride && !files.session) return false;
 
-        const ms = await getSessionMarkers(files.session).catch((e) =>
-          console.log('TSME ERROR', e?.message),
-        );
+        const ms = await getSessionMarkers(
+          sessionFileOverride ?? files.session!,
+        ).catch((e) => console.log('TSME ERROR', e?.message));
         if (!ms) return false;
 
         setMarkers(ms);

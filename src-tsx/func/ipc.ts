@@ -1,7 +1,10 @@
 import { emit, listen } from '@tauri-apps/api/event';
 
 export type IPCEventPayloads = {
-  remote_confirm: boolean;
+  tsme_begin: {
+    allowed: boolean;
+    path?: string;
+  };
 };
 
 // --------------------------------------------------

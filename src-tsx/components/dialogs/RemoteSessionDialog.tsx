@@ -15,9 +15,11 @@ const PATH = '/dialog-timestamps';
 
 export default function RemoteSessionDialog() {
   // submit
-  const handleSubmit = useCallback((agreed: boolean) => {
-    ipcEmit('remote_confirm')(agreed);
-    getCurrentWebviewWindow().close();
+  const handleSubmit = useCallback(async (allowed: boolean) => {
+    await ipcEmit('tsme_begin')({ allowed });
+    setInterval(() => {
+      getCurrentWebviewWindow().close();
+    }, 150);
   }, []);
 
   // shortcuts

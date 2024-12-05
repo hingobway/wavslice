@@ -43,7 +43,7 @@ export default function FileParseState({ children }: Children) {
           newFiles.session = path;
           setConfirmed(null);
           if (!remoteAllowed) RemoteSessionDialog.create();
-          else ipcEmit('remote_confirm')(true);
+          else ipcEmit('tsme_begin')({ allowed: true, path });
         }
       }
 
@@ -92,11 +92,11 @@ export default function FileParseState({ children }: Children) {
 
     // REMOTE LISTEN
     evs.push(
-      ipcListen('remote_confirm')(async ({ payload: agreed }) => {
-        setConfirmed(agreed);
-        if (!agreed) return setFiles((f) => ({ ...f, session: undefined }));
+      ipcListen('tsme_begin')(async ({ payload: { allowed, path } }) => {
+        setConfirmed(allowed);
+        if (!allowed) return setFiles((f) => ({ ...f, session: undefined }));
 
-        const success = await fetchTSME();
+        const success = await fetchTSME(path);
         console.log('TSME STATUS', success);
       }),
     );
