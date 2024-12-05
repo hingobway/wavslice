@@ -1,4 +1,4 @@
-import { useFullReset } from '@/ctx/fileDrop';
+import { useFullReset } from '@/ctx/filesState';
 import clsx from 'clsx';
 import { RotateCcwIcon } from 'lucide-react';
 

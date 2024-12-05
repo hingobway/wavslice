@@ -4,9 +4,9 @@ import { fetch } from '@tauri-apps/plugin-http';
 import * as cheerio from 'cheerio';
 import { parse as CSVparse } from 'csv-parse/browser/esm/sync';
 
-import { getPathProps } from '@/ctx/fileDrop';
+import { getPathProps } from '@/ctx/filesState';
 
-export async function getSessionMarkers(filepath: string, SR: number = 0) {
+export async function getSessionMarkers(filepath: string) {
   const fp = getPathProps(filepath);
   if (!fp) throw new Error('BAD_PATH');
 
@@ -63,7 +63,7 @@ export async function getSessionMarkers(filepath: string, SR: number = 0) {
       if (!(Number.isFinite(h) && Number.isFinite(m) && Number.isFinite(s)))
         throw new Error('INVALID_CSV');
 
-      times.push((h * 3600 + m * 60 + s) * SR);
+      times.push(h * 3600 + m * 60 + s);
     }
   }
 

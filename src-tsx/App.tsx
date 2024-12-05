@@ -8,9 +8,9 @@ import {
   useInputFileObjects,
   useMarkers,
   useMarkersList,
-} from './ctx/fileDrop';
+} from './ctx/filesState';
 import { isDev } from './utils/dev';
-import { useOpenFileDialog } from './components/FileDropState';
+import { useOpenFileDialog } from './ctx/fileParseState';
 
 import Header from './components/Header';
 import MarkerRow from './components/MarkerRow';
@@ -126,14 +126,6 @@ export default function App() {
 
           {/* save section */}
           <FileSave />
-
-          {/* dialog temp */}
-          {/* <button
-            className="fixed right-1 top-8 px-2 text-zinc-700"
-            onClick={() => TextFormatDialog.create()}
-          >
-            &rarr;
-          </button> */}
 
           {/* drag overlay */}
           <Transition show={isFileOnTop}>

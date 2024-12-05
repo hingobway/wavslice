@@ -9,6 +9,7 @@ import {
 import MIME from 'mime/lite';
 import { useCallback } from 'react';
 import { readAudioFile, readMidiFile } from '@/rpc/commands';
+import { useLoading } from '@/utils/transition';
 import { getSessionMarkers } from '@/func/tsme';
 
 export const MAX_MARKERS = 100;
@@ -105,6 +106,12 @@ const selectedMarkersState = atom({
 });
 export const useSelectedMarkers = () => useRecoilState(selectedMarkersState);
 
+const sessionMarkersState = atom<number[] | null>({
+  key: 'SessionMarkers',
+  default: null,
+});
+export const useSessionMarkers = () => useRecoilState(sessionMarkersState);
+
 const remoteConfirmState = atom<boolean | null>({
   key: 'RemoteConfirm',
   default: null,
@@ -118,52 +125,82 @@ const globalLoadingState = atom({
 export const useGlobalIsLoading = () => useRecoilValue(globalLoadingState);
 
 export const useUpdateMarkers = () => {
-  const cb = useRecoilCallback(({ snapshot, set }) => async () => {
-    set(globalLoadingState, true);
+  const cb = useRecoilCallback(
+    ({ snapshot: { getPromise: get }, set }) =>
+      async () => {
+        set(globalLoadingState, true);
 
-    const files = await snapshot.getPromise(inputFilesState);
-    const remoteAllowed = await snapshot.getPromise(remoteConfirmState);
+        const files = await get(inputFilesState);
 
-    const markers = { ...markersDefault };
-    let sampleRate = 0;
-    let audioLength = 0;
+        const markers = { ...markersDefault };
+        let sampleRate = 0;
+        let audioLength = 0;
 
-    if (files.audio) {
-      const aud = await readAudioFile(files.audio);
-      if (aud) {
-        markers.audio = aud.markers;
-        sampleRate = aud.sampleRate;
-        audioLength = aud.samples;
-      }
-    }
+        if (files.audio) {
+          const aud = await readAudioFile(files.audio);
+          if (aud) {
+            markers.audio = aud.markers;
+            sampleRate = aud.sampleRate;
+            audioLength = aud.samples;
 
-    if (files.midi) {
-      if (sampleRate) {
-        // if possible, get markers
-        const ms = await readMidiFile(files.midi, sampleRate);
-        if (ms) markers.midi = ms;
-      } else {
-        // otherwise, just count them
-        const md = (await readMidiFile(files.midi)) ?? 0;
-        markers.midi = Array(md)
-          .fill(0)
-          .map((_, i) => i + 1);
-      }
-    }
+            console.log('AUDIO READ', aud);
+          }
+        }
 
-    if (files.session && remoteAllowed) {
-      const ms = await getSessionMarkers(files.session, sampleRate).catch((e) =>
-        console.log('TSME ERROR', e?.message),
-      );
-      if (ms) markers.session = ms;
-    }
+        if (files.midi) {
+          if (sampleRate) {
+            // if possible, get markers
+            const ms = await readMidiFile(files.midi, sampleRate);
+            if (ms) markers.midi = ms;
+          } else {
+            // otherwise, just count them
+            const md = (await readMidiFile(files.midi)) ?? 0;
+            markers.midi = Array(md).fill(0);
+          }
+        }
 
-    set(markersState, markers);
-    set(audioLengthState, audioLength);
-    set(globalLoadingState, false);
-  });
+        const sessionMarkers = await get(sessionMarkersState);
+        if (files.session && sessionMarkers?.length) {
+          const ms = sessionMarkers.map((m) => m * sampleRate);
+          markers.session = ms;
+        }
+
+        set(markersState, markers);
+        set(audioLengthState, audioLength);
+        set(globalLoadingState, false);
+      },
+  );
   return cb;
 };
+
+/** parse TSME timestamps on the web. callback returns true if successful.
+ * @returns [callback, isLoading]
+ */
+export function useTSMETimestamps() {
+  // state needed
+  const [files] = useInputFiles();
+  const [, setMarkers] = useSessionMarkers();
+
+  // function
+  const [isLoading, loading] = useLoading<boolean>();
+  const cb = useCallback(
+    () =>
+      loading(async () => {
+        if (!files.session) return false;
+
+        const ms = await getSessionMarkers(files.session).catch((e) =>
+          console.log('TSME ERROR', e?.message),
+        );
+        if (!ms) return false;
+
+        setMarkers(ms);
+        return true;
+      }),
+    [files.session, loading, setMarkers],
+  );
+
+  return [cb, isLoading] as const;
+}
 
 // -------------------------------------------
 
@@ -191,10 +228,12 @@ type PathProps = ReturnType<typeof getPathProps> & {};
 export function useFullReset() {
   const [, setFiles] = useInputFiles();
   const [, setMarkers] = useMarkers();
+  const [, setSessionMarkers] = useSessionMarkers();
 
   const cb = useCallback(() => {
     setFiles({});
     setMarkers({ ...markersDefault });
-  }, [setFiles, setMarkers]);
+    setSessionMarkers(null);
+  }, [setFiles, setMarkers, setSessionMarkers]);
   return cb;
 }

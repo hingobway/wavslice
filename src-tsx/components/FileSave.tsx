@@ -2,7 +2,7 @@ import {
   useFullReset,
   useInputFileObjects,
   useMarkersList,
-} from '@/ctx/fileDrop';
+} from '@/ctx/filesState';
 import { writeAudioFile } from '@/rpc/commands';
 import { useLoading } from '@/utils/transition';
 import { Transition } from '@headlessui/react';

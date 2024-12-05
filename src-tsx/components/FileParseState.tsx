@@ -4,8 +4,10 @@ import {
   useFileOnTop,
   useInputFiles,
   useRemoteConfirm,
+  useSessionMarkers,
+  useTSMETimestamps,
   useUpdateMarkers,
-} from '@/ctx/fileDrop';
+} from '@/ctx/filesState';
 import { Children } from '@/utils/reactTypes';
 import { useCallback, useEffect } from 'react';
 
@@ -15,17 +17,17 @@ import { open } from '@tauri-apps/plugin-dialog';
 import { MimeType } from '@/utils/mimeTypes';
 import RemoteSessionDialog from './dialogs/RemoteSessionDialog';
 import { UnlistenFn } from '@tauri-apps/api/event';
-import { ipcListen } from '@/func/ipc';
-import { FileDialogProvider } from '@/ctx/openFileDialog';
+import { ipcEmit, ipcListen } from '@/func/ipc';
+import { FileDialogProvider, TSMELoadingProvider } from '@/ctx/fileParseState';
 
 const SESSION_FILE_EXTS = ['als', 'flp'];
 
-export default function FileDropState({ children }: Children) {
+export default function FileParseState({ children }: Children) {
   const [, setOnTop] = useFileOnTop();
 
   const [files, setFiles] = useInputFiles();
 
-  const [, setConfirmed] = useRemoteConfirm();
+  const [remoteAllowed, setConfirmed] = useRemoteConfirm();
 
   const processPaths = useCallback(
     (files: string[]) => {
@@ -40,13 +42,14 @@ export default function FileDropState({ children }: Children) {
         if (SESSION_FILE_EXTS.includes(fp.ext.toLowerCase())) {
           newFiles.session = path;
           setConfirmed(null);
-          RemoteSessionDialog.create();
+          if (!remoteAllowed) RemoteSessionDialog.create();
+          else ipcEmit('remote_confirm')(true);
         }
       }
 
       setFiles((o) => ({ ...o, ...newFiles }));
     },
-    [setConfirmed, setFiles],
+    [remoteAllowed, setConfirmed, setFiles],
   );
 
   // open file dialog
@@ -65,6 +68,9 @@ export default function FileDropState({ children }: Children) {
 
     processPaths(f);
   }, [processPaths]);
+
+  // tsme runner
+  const [fetchTSME, isTSMELoading] = useTSMETimestamps();
 
   // ON MOUNT
   useEffect(() => {
@@ -86,9 +92,12 @@ export default function FileDropState({ children }: Children) {
 
     // REMOTE LISTEN
     evs.push(
-      ipcListen('remote_confirm')(({ payload: agreed }) => {
+      ipcListen('remote_confirm')(async ({ payload: agreed }) => {
         setConfirmed(agreed);
-        if (!agreed) setFiles((f) => ({ ...f, session: undefined }));
+        if (!agreed) return setFiles((f) => ({ ...f, session: undefined }));
+
+        const success = await fetchTSME();
+        console.log('TSME STATUS', success);
       }),
     );
 
@@ -98,20 +107,23 @@ export default function FileDropState({ children }: Children) {
         e.then((cb) => cb());
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchTSME, processPaths, setConfirmed, setFiles, setOnTop]);
 
   // GET MARKER FILE DATA
   const updateMarkers = useUpdateMarkers();
+  const [sessionMarkers] = useSessionMarkers();
   useEffect(() => {
     updateMarkers();
-  }, [files, updateMarkers]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files, sessionMarkers]);
 
   return (
     <>
       <FileDialogProvider cb={selectFiles}>
-        {children}
-        {/*  */}
+        <TSMELoadingProvider value={isTSMELoading}>
+          {children}
+          {/*  */}
+        </TSMELoadingProvider>
       </FileDialogProvider>
     </>
   );

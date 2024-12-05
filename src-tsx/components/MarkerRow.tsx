@@ -6,8 +6,9 @@ import {
   Markers,
   useGlobalIsLoading,
   useSelectedMarkers,
-} from '@/ctx/fileDrop';
+} from '@/ctx/filesState';
 import { SetState } from '@/utils/reactTypes';
+import { useOpenFileDialog, useTSMELoading } from '@/ctx/fileParseState';
 
 export default function MarkerRow({
   markers: count,
@@ -42,14 +43,20 @@ export default function MarkerRow({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count]);
 
+  const openFileDialog = useOpenFileDialog();
+
   const isLoading = useGlobalIsLoading();
+  const isTSMELoading = useTSMELoading();
 
   return (
     <>
       <div
         className="group flex flex-row items-center gap-4 px-4 py-1 transition data-[e]:cursor-pointer data-[e]:bg-zinc-700 hover:[&:not(:has([data-disabled]))]:data-[e]:bg-opacity-80"
         data-e={enabled || null}
-        onClick={() => setChecked((c) => !c)}
+        onClick={() => {
+          if (!enabled) openFileDialog?.();
+          setChecked((c) => !c);
+        }}
       >
         <Checkbox
           checked={enabled && checked}
@@ -71,14 +78,12 @@ export default function MarkerRow({
           data-w={(enabled && count) || null}
         >
           {/* loading spinner */}
-          {isLoading && (
+          {isLoading || (markerName === 'session' && isTSMELoading) ? (
             <>
               <Spinner />
               <span className="inline-block w-0.5"></span>
             </>
-          )}
-          {/* count */}
-          {!isLoading && (
+          ) : (
             <span className="group-data-[w]/m:text-zinc-100">{count}</span>
           )}
           <span className=""> markers</span>
