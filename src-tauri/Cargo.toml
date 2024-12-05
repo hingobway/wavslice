@@ -1,6 +1,6 @@
 [package]
 name = "wavslice"
-version = "0.3.2"
+version = "0.3.3"
 description = "Add QLab-compatible slices to WAV files from Pro Tools or MIDI versions."
 authors = ["hingobway"]
 edition = "2021"
