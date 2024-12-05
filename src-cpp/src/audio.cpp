@@ -13,6 +13,11 @@
 
 int AUDIO::modeWrite(const char *path_in, const char *path_out, const char *m_str)
 {
+
+  // input and output paths must be different
+  if (std::string(path_in) == std::string(path_out))
+    return err("INPUT_OUTPUT_PATH_SAME");
+
   // create markers list from args
   std::string markers_str = m_str;
   std::vector<int> markers;

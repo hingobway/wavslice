@@ -6,7 +6,8 @@ import {
 import { writeAudioFile } from '@/rpc/commands';
 import { useLoading } from '@/utils/transition';
 import { Transition } from '@headlessui/react';
-import { save } from '@tauri-apps/plugin-dialog';
+import { join as pathJoin } from '@tauri-apps/api/path';
+import { message, save } from '@tauri-apps/plugin-dialog';
 import clsx from 'clsx';
 import { LoaderCircleIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -36,7 +37,10 @@ export default function FileSave() {
       // prompt output path
       const outputFile = await save({
         title: 'Save output audio file:',
-        defaultPath: files.audio?.path,
+        defaultPath: await pathJoin(
+          files.audio.folder,
+          `${files.audio.nameNoExt} sliced.${files.audio.ext}`,
+        ),
         filters: [
           {
             name: 'allowed',
@@ -45,6 +49,13 @@ export default function FileSave() {
         ],
       });
       if (!outputFile) return;
+
+      if (outputFile == files.audio.path)
+        return message('Your output file can’t overwrite the input file.', {
+          title: 'Choose a new location',
+          kind: 'error',
+        });
+
       const success = await writeAudioFile(
         files.audio.path,
         outputFile,

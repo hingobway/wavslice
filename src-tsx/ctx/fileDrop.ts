@@ -168,7 +168,7 @@ export const useUpdateMarkers = () => {
 // -------------------------------------------
 
 export function getPathProps(path?: string | null) {
-  const ms = path?.match(/^(.+[\/\\])([^\/\\]*\.([^\.\/\\]+))$/);
+  const ms = path?.match(/^(.+[\/\\])(([^\/\\]*)\.([^\.\/\\]+))$/);
   if (!ms) return null;
 
   return {
@@ -178,10 +178,12 @@ export function getPathProps(path?: string | null) {
     folder: ms[1],
     /** file name including extension */
     name: ms[2],
+    /** file name without extension */
+    nameNoExt: ms[3],
     /** file extension (with no period) */
-    ext: ms[3],
+    ext: ms[4],
     /** MIME type if found */
-    mime: MIME.getType(ms[3]),
+    mime: MIME.getType(ms[4]),
   };
 }
 type PathProps = ReturnType<typeof getPathProps> & {};
