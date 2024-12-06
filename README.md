@@ -9,6 +9,9 @@ _coming soon:_ **Pro Tools Session Data &bull; QLab Timeline &bull; Raw Text**
 
 ![wavslice screenshots](https://github.com/user-attachments/assets/705450f4-a81b-4619-9422-fad540adddfe)
 
+
+**Example Videos:**  [▶️ Ableton Live → QLab](https://www.youtube.com/watch?v=4JGspfkRaRM)
+
 ---
 
 ## Download App
