@@ -9,17 +9,18 @@ _coming soon:_ **Pro Tools Session Data &bull; QLab Timeline &bull; Raw Text**
 
 ![wavslice screenshots](https://github.com/user-attachments/assets/705450f4-a81b-4619-9422-fad540adddfe)
 
-
-**Example Videos:**  [▶️ Ableton Live → QLab](https://www.youtube.com/watch?v=4JGspfkRaRM)
+**Example Videos:** [▶️ Ableton Live → QLab](https://www.youtube.com/watch?v=4JGspfkRaRM)
 
 ---
 
 ## Download App
 
 > [!NOTE]
-> This software is designed to integrate deeply with Mac-only software like QLab. It may work on other operating systems, but build system changes will most likely be required.
+> This software is designed to integrate deeply with Mac-only software like QLab. It should work on other operating systems, but you'll need to build it yourself.
 
-The app is prebuilt for apple silicon [here](https://github.com/hingobway/wavslice/releases), but it is currently unsigned. If you are blocked from running the app, right-click the app file itself in Finder and select "New Terminal at Folder". Then run
+#### [Download for Apple silicon →](https://github.com/hingobway/wavslice/releases/latest)
+
+The macOS app is not currently signed. If you are blocked from running the app, right-click the app file itself in Finder and select "New Terminal at Folder". Then run
 
 ```
 xattr -dr com.apple.quarantine .
