@@ -18,9 +18,11 @@ _coming soon:_ **Pro Tools Session Data &bull; QLab Timeline &bull; Raw Text**
 > [!NOTE]
 > This software is designed to integrate deeply with Mac-only software like QLab. It should work on other operating systems, but you'll need to build it yourself.
 
-#### [Download for Apple silicon →](https://github.com/hingobway/wavslice/releases/latest)
+### [Download for Apple silicon →](https://github.com/hingobway/wavslice/releases/latest)
 
-The macOS app is not currently signed. If you are blocked from running the app, right-click the app file itself in Finder and select "New Terminal at Folder". Then run
+The macOS build is not notarized—you’ll need to "Open anyway" in Privacy & Security settings.
+
+If you are still blocked from running the app, right-click the app file itself in Finder and select "New Terminal at Folder". Then run
 
 ```
 xattr -dr com.apple.quarantine .
