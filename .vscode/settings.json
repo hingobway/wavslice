@@ -2,6 +2,8 @@
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "cmake.sourceDirectory": "${workspaceFolder}/src-cpp",
   "cmake.buildDirectory": "${workspaceFolder}/src-cpp/build",
+  "cmake.configureOnOpen": false,
+  "cmake.configureOnEdit": false,
 
   "tailwindCSS.experimental.classRegex": [
     ["clsx\\(([^;]*);", "'([^']*)'"],

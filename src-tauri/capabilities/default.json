@@ -23,6 +23,11 @@
           "name": "bin/markers",
           "sidecar": true,
           "args": true
+        },
+        {
+          "name": "bin/dawtool",
+          "sidecar": true,
+          "args": true
         }
       ]
     },
