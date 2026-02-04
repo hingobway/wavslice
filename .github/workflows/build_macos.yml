@@ -18,17 +18,27 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
-      # 1. Install ccache
+      - name: Cache Homebrew
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/Homebrew
+          # This key uses the workflow file hash. If you change packages in this file,
+          # the cache invalidates automatically.
+          key: ${{ runner.os }}-brew-${{ hashFiles('.github/workflows/*') }}
+          restore-keys: |
+            ${{ runner.os }}-brew-
+
       - name: install brew packages
         run: |
-          brew install rust cmake libsndfile ccache
+          brew install rust cmake ccache
+          brew install autoconf autogen automake flac libogg libtool libvorbis opus mpg123 pkg-config
 
       - name: Setup Python
         uses: actions/setup-python@v6.2.0
         with:
           python-version: 3.13
 
-      # 2. Configure GitHub Actions Cache
       - name: Cache ccache and Nuitka
         uses: actions/cache@v4
         with:
@@ -52,7 +62,6 @@ jobs:
         run: |
           git submodule update --init
 
-      # 3. Configure/Zero ccache before build
       - name: Prepare ccache
         run: |
           # Set max cache size to 2GB (Github Actions cache limit is 10GB total)
@@ -61,7 +70,7 @@ jobs:
           ccache -z
           ccache -s
 
-      # 4. Build (Make sure your Nuitka call includes the CI flags!)
+      # cpp & python build
       - name: cmake build
         run: |
           cd src-cpp
@@ -69,7 +78,6 @@ jobs:
           cd build
           make
 
-      # 5. Show ccache stats (Verify it worked)
       - name: ccache stats
         run: ccache -s
 
@@ -83,13 +91,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # upload
+
       - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: dmg
           path: ${{ env.DMG_PATH }}/
 
-      - name: upload binary
+      - name: upload release binary
         if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2.1.0
         with:

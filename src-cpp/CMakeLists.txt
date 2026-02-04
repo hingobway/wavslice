@@ -7,11 +7,15 @@ project(wavslice VERSION 0.3.4)
 set(PROGRAM_NAME "markers")
 
 # PACKAGE INCLUDE
-set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_STATIC_LIBRARY_SUFFIX})
-find_package(SndFile CONFIG REQUIRED)
+
+# midifile
 include(include/midifile.cmake)
 
-# find_package(Boost CONFIG REQUIRED COMPONENTS locale)
+# libsndfile
+set(BUILD_EXAMPLES OFF)
+set(BUILD_TESTING OFF)
+set(INSTALL_MANPAGES OFF)
+add_subdirectory(include/libsndfile)
 
 # DETERMINE TARGET TRIPLET FOR RUST
 execute_process(
