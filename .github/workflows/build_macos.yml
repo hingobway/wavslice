@@ -42,7 +42,8 @@ jobs:
         run: |
           cd src-cpp
           cmake -Bbuild -DCMAKE_BUILD_TYPE=Release
-          cmake --build build
+          cd build
+          make
 
       # javascript
       - name: pnpm install
