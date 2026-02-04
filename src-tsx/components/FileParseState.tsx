@@ -15,9 +15,8 @@ import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { open } from '@tauri-apps/plugin-dialog';
 
 import { MimeType } from '@/utils/mimeTypes';
-import RemoteSessionDialog from './dialogs/RemoteSessionDialog';
 import { UnlistenFn } from '@tauri-apps/api/event';
-import { ipcEmit, ipcListen } from '@/func/ipc';
+import { ipcListen } from '@/func/ipc';
 import { FileDialogProvider, TSMELoadingProvider } from '@/ctx/fileParseState';
 
 const SESSION_FILE_EXTS = ['als', 'flp'];
@@ -27,7 +26,7 @@ export default function FileParseState({ children }: Children) {
 
   const [files, setFiles] = useInputFiles();
 
-  const [remoteAllowed, setConfirmed] = useRemoteConfirm();
+  const [, setConfirmed] = useRemoteConfirm();
 
   const processPaths = useCallback(
     (files: string[]) => {
@@ -41,15 +40,12 @@ export default function FileParseState({ children }: Children) {
         if (fp.mime === ('text/plain' satisfies MimeType)) newFiles.text = path;
         if (SESSION_FILE_EXTS.includes(fp.ext.toLowerCase())) {
           newFiles.session = path;
-          setConfirmed(null);
-          if (!remoteAllowed) RemoteSessionDialog.create();
-          else ipcEmit('tsme_begin')({ allowed: true, path });
         }
       }
 
       setFiles((o) => ({ ...o, ...newFiles }));
     },
-    [remoteAllowed, setConfirmed, setFiles],
+    [setFiles],
   );
 
   // open file dialog

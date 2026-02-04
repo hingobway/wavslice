@@ -1,6 +1,5 @@
 import { Command } from '@tauri-apps/plugin-shell';
-
-const BINARY = 'bin/markers';
+import { BINARIES } from './binaries';
 
 type ResponseType =
   | 'MARKERS'
@@ -13,11 +12,12 @@ type ResponseType =
 // --------------------------------------------------------
 
 export function runCommand(
+  binary: keyof typeof BINARIES,
   args: string[],
   msgHandler?: (line: string) => void,
 ) {
   return new Promise<boolean>((resolve) => {
-    const cmd = Command.sidecar(BINARY, args);
+    const cmd = Command.sidecar(BINARIES[binary], args);
     cmd.stdout.on('data', (line) => {
       if (checkErr(line)) return;
       msgHandler?.(line);

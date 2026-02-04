@@ -8,7 +8,7 @@ import {
 
 import MIME from 'mime/lite';
 import { useCallback } from 'react';
-import { readAudioFile, readMidiFile } from '@/rpc/commands';
+import { readAudioFile, readMidiFile, readSessionFile } from '@/rpc/commands';
 import { useLoading } from '@/utils/transition';
 import { getSessionMarkers } from '@/func/tsme';
 
@@ -157,10 +157,9 @@ export const useUpdateMarkers = () => {
           }
         }
 
-        const sessionMarkers = await get(sessionMarkersState);
-        if (files.session && sessionMarkers?.length) {
-          const ms = sessionMarkers.map((m) => m * sampleRate);
-          markers.session = ms;
+        if (files.session) {
+          const ms = await readSessionFile(files.session, sampleRate);
+          if (ms) markers.session = ms;
         }
 
         set(markersState, markers);
