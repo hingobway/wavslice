@@ -4,5 +4,6 @@ set -e
 
 source .venv/bin/activate
 
-nuitka --mode=onefile --quiet --show-progress --output-dir=out src/parse.py
+nuitka --mode=onefile --progress-bar=rich --python-flag=-u \
+  --output-dir=out src/parse.py
 # --remove-output

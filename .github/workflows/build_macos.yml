@@ -11,17 +11,34 @@ jobs:
       contents: write
     env:
       DMG_PATH: src-tauri/target/release/bundle/dmg
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
     steps:
-      # prepare codebase
       - uses: actions/checkout@v4.1.6
 
-      # prep system
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
+
+      # 1. Install ccache
+      - name: install brew packages
+        run: |
+          brew install rust cmake libsndfile ccache
+
       - name: Setup Python
         uses: actions/setup-python@v6.2.0
         with:
           python-version: 3.13
+
+      # 2. Configure GitHub Actions Cache
+      - name: Cache ccache and Nuitka
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.CCACHE_DIR }}
+            ~/Library/Caches/Nuitka
+          key: ${{ runner.os }}-nuitka-ccache-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nuitka-ccache-
+
       - name: install pnpm
         uses: pnpm/action-setup@v4.0.0
         with:
@@ -30,14 +47,21 @@ jobs:
         uses: actions/setup-node@v4.0.2
         with:
           cache: 'pnpm'
-      - name: install brew packages
-        run: |
-          brew install rust cmake libsndfile
 
-      # cmake build
       - name: dependencies
         run: |
           git submodule update --init
+
+      # 3. Configure/Zero ccache before build
+      - name: Prepare ccache
+        run: |
+          # Set max cache size to 2GB (Github Actions cache limit is 10GB total)
+          ccache -M 2G
+          # Zero out stats so we see exactly what happened in this run later
+          ccache -z
+          ccache -s
+
+      # 4. Build (Make sure your Nuitka call includes the CI flags!)
       - name: cmake build
         run: |
           cd src-cpp
@@ -45,11 +69,14 @@ jobs:
           cd build
           make
 
-      # javascript
+      # 5. Show ccache stats (Verify it worked)
+      - name: ccache stats
+        run: ccache -s
+
       - name: pnpm install
         run: pnpm install
 
-      # compile
+      # build app
       - name: bundle
         uses: tauri-apps/tauri-action@v0
         env:
