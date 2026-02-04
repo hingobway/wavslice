@@ -9,6 +9,8 @@ jobs:
     runs-on: macos-latest
     permissions:
       contents: write
+    env:
+      DMG_PATH: src-tauri/target/release/bundle/dmg
     steps:
       # prepare codebase
       - uses: actions/checkout@v4.1.6
@@ -16,6 +18,10 @@ jobs:
       # prep system
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
+      - name: Setup Python
+        uses: actions/setup-python@v6.2.0
+        with:
+          python-version: 3.13
       - name: install pnpm
         uses: pnpm/action-setup@v4.0.0
         with:
@@ -35,8 +41,8 @@ jobs:
       - name: cmake build
         run: |
           cd src-cpp
-          cmake -Bbuild
-          cmake --build build --config Release
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
 
       # javascript
       - name: pnpm install
@@ -57,7 +63,14 @@ jobs:
           # APPLE_SIGNING_IDENTITY: ${{ secrets.CERT_APPLICATION }}
 
       # upload
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dmg
+          path: ${{ env.DMG_PATH }}/
+
       - name: upload binary
+        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2.1.0
         with:
-          files: src-tauri/target/release/bundle/dmg/*.dmg
+          files: ${{ env.DMG_PATH }}/*.dmg
