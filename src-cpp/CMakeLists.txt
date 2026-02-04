@@ -15,6 +15,8 @@ include(include/midifile.cmake)
 set(BUILD_EXAMPLES OFF)
 set(BUILD_TESTING OFF)
 set(INSTALL_MANPAGES OFF)
+set(ENABLE_EXTERNAL_LIBS OFF)
+set(ENABLE_MPEG OFF)
 add_subdirectory(include/libsndfile)
 
 # DETERMINE TARGET TRIPLET FOR RUST
