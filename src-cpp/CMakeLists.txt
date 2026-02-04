@@ -7,10 +7,17 @@ project(wavslice VERSION 0.3.4)
 set(PROGRAM_NAME "markers")
 
 # PACKAGE INCLUDE
-find_package(SndFile CONFIG REQUIRED)
+
+# midifile
 include(include/midifile.cmake)
 
-# find_package(Boost CONFIG REQUIRED COMPONENTS locale)
+# libsndfile
+set(BUILD_EXAMPLES OFF)
+set(BUILD_TESTING OFF)
+set(INSTALL_MANPAGES OFF)
+set(ENABLE_EXTERNAL_LIBS OFF)
+set(ENABLE_MPEG OFF)
+add_subdirectory(include/libsndfile)
 
 # DETERMINE TARGET TRIPLET FOR RUST
 execute_process(
@@ -52,4 +59,41 @@ target_link_libraries(${TARGET_NAME}
   midifile
 
   # Boost::locale
+)
+
+# PYTHON BUILD
+
+# python source files
+set(PYTHON_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../src-py")
+set(PYTHON_BIN_FILE "${PYTHON_SRC_DIR}/out/parse.bin")
+set(PYTHON_FINAL_BIN_LOC "${CMAKE_CURRENT_SOURCE_DIR}/../src-tauri/bin/dawtool-${RUST_HOST}")
+file(GLOB_RECURSE PYTHON_SOURCES "${PYTHON_SRC_DIR}/src/*.py")
+
+# setup environment
+message(STATUS "Setting up python...")
+execute_process(
+  COMMAND bash build_setup.sh
+  WORKING_DIRECTORY ${PYTHON_SRC_DIR}
+)
+
+# build python script to binary
+add_custom_command(
+  OUTPUT ${PYTHON_BIN_FILE}
+  DEPENDS ${PYTHON_SOURCES}
+  WORKING_DIRECTORY ${PYTHON_SRC_DIR}
+  COMMAND bash build.sh
+  COMMENT "Building python binary"
+)
+
+# copy to bundle directory
+add_custom_command(
+  OUTPUT ${PYTHON_FINAL_BIN_LOC}
+  DEPENDS ${PYTHON_BIN_FILE}
+  COMMAND ${CMAKE_COMMAND} -E copy
+  ${PYTHON_BIN_FILE} ${PYTHON_FINAL_BIN_LOC}
+  COMMENT "Copying Python binary to bundle"
+)
+
+add_custom_target(build_python ALL
+  DEPENDS ${PYTHON_FINAL_BIN_LOC}
 )

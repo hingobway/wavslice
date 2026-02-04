@@ -1,0 +1,12 @@
+dawtool @ git+https://github.com/offlinemark/dawtool@44f3e19ffc686477051e2d8a9049a838018d6256
+hexdump==3.3
+iniconfig==2.3.0
+Nuitka==2.8.9
+numpy==2.4.0
+ordered-set==4.1.0
+packaging==25.0
+pluggy==1.6.0
+Pygments==2.19.2
+pytest==9.0.2
+scipy==1.16.3
+zstandard==0.25.0

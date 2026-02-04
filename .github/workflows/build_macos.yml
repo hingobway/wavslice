@@ -9,13 +9,46 @@ jobs:
     runs-on: macos-latest
     permissions:
       contents: write
+    env:
+      DMG_PATH: src-tauri/target/release/bundle/dmg
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
     steps:
-      # prepare codebase
       - uses: actions/checkout@v4.1.6
 
-      # prep system
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Cache Homebrew
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/Homebrew
+          # This key uses the workflow file hash. If you change packages in this file,
+          # the cache invalidates automatically.
+          key: ${{ runner.os }}-brew-${{ hashFiles('.github/workflows/*') }}
+          restore-keys: |
+            ${{ runner.os }}-brew-
+
+      - name: install brew packages
+        run: |
+          brew install rust cmake ccache
+          brew install autoconf autogen automake flac libogg libtool libvorbis opus mpg123 pkg-config
+
+      - name: Setup Python
+        uses: actions/setup-python@v6.2.0
+        with:
+          python-version: 3.13
+
+      - name: Cache ccache and Nuitka
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.CCACHE_DIR }}
+            ~/Library/Caches/Nuitka
+          key: ${{ runner.os }}-nuitka-ccache-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nuitka-ccache-
+
       - name: install pnpm
         uses: pnpm/action-setup@v4.0.0
         with:
@@ -24,40 +57,49 @@ jobs:
         uses: actions/setup-node@v4.0.2
         with:
           cache: 'pnpm'
-      - name: install brew packages
-        run: |
-          brew install rust cmake libsndfile
 
-      # cmake build
       - name: dependencies
         run: |
           git submodule update --init
+
+      - name: Prepare ccache
+        run: |
+          # Set max cache size to 2GB (Github Actions cache limit is 10GB total)
+          ccache -M 2G
+          # Zero out stats so we see exactly what happened in this run later
+          ccache -z
+          ccache -s
+
+      # cpp & python build
       - name: cmake build
         run: |
           cd src-cpp
-          cmake -Bbuild
-          cmake --build build --config Release
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=Release
+          cd build
+          make
 
-      # javascript
+      - name: ccache stats
+        run: ccache -s
+
       - name: pnpm install
         run: pnpm install
 
-      # compile
-      - name: prep cert
-        uses: apple-actions/import-codesign-certs@v3
-        with:
-          p12-file-base64: ${{ secrets.CERT_P12 }}
-          p12-password: ${{ secrets.CERT_P12_PASSWORD }}
+      # build app
       - name: bundle
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # APPLE_CERTIFICATE: ${{ secrets.CERT_P12 }}
-          # APPLE_CERTIFICATE_PASSWORD: ${{ secrets.CERT_P12_PASSWORD }}
-          # APPLE_SIGNING_IDENTITY: ${{ secrets.CERT_APPLICATION }}
 
       # upload
-      - name: upload binary
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dmg
+          path: ${{ env.DMG_PATH }}/
+
+      - name: upload release binary
+        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2.1.0
         with:
-          files: src-tauri/target/release/bundle/dmg/*.dmg
+          files: ${{ env.DMG_PATH }}/*.dmg

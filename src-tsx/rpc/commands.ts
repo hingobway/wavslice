@@ -5,7 +5,7 @@ export async function readAudioFile(filePath: string) {
   let SR = 0;
   let samples = 0;
 
-  const success = await rpc.runCommand(['-a', filePath], (line) => {
+  const success = await rpc.runCommand('main', ['-a', filePath], (line) => {
     // process incoming markers
     const ms = rpc.getMsg('MARKERS', line);
     if (ms) {
@@ -47,7 +47,7 @@ export async function readMidiFile(
 
   const args = ['-m', filePath];
   if (sampleRate) args.push('' + sampleRate);
-  const success = await rpc.runCommand(args, (line) => {
+  const success = await rpc.runCommand('main', args, (line) => {
     const ms = rpc.getMsg('MARKERS', line);
     if (ms) {
       markers = parseMarkersString(ms);
@@ -63,6 +63,22 @@ export async function readMidiFile(
   return count;
 }
 
+export async function readSessionFile(filePath: string, sampleRate: number) {
+  let markers: number[] = [];
+  const success = await rpc.runCommand(
+    'tsme',
+    [filePath, String(sampleRate)],
+    (line) => {
+      const ms = rpc.getMsg('MARKERS', line);
+      if (ms) {
+        markers = parseMarkersString(ms);
+      }
+    },
+  );
+  if (!success) return null;
+  return markers;
+}
+
 export async function writeAudioFile(
   inputFile: string,
   outputFile: string,
@@ -70,7 +86,12 @@ export async function writeAudioFile(
 ) {
   const mlist = markers.join(',');
 
-  const success = await rpc.runCommand(['-w', inputFile, outputFile, mlist]);
+  const success = await rpc.runCommand('main', [
+    '-w',
+    inputFile,
+    outputFile,
+    mlist,
+  ]);
 
   return success;
 }

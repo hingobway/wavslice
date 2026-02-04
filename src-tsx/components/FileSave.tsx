@@ -27,7 +27,7 @@ export default function FileSave() {
     return () => clearTimeout(tm);
   }, [status]);
 
-  const [isLoading, loading] = useLoading();
+  const [isLoading, loading] = useLoading<any>();
 
   // handle save
   const submit = useCallback(() => {
