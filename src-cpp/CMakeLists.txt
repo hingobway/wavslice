@@ -3,7 +3,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # PROJECT INIT
-project(wavslice VERSION 0.3.4)
+project(wavslice VERSION 0.4.0)
 set(PROGRAM_NAME "markers")
 
 # PACKAGE INCLUDE
